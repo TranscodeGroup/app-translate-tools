@@ -5,10 +5,10 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "main.py",
+            "name": "tg.py",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}/src/main.py",
+            "program": "${workspaceFolder}/tg.py",
             "console": "integratedTerminal"
         },
         {
