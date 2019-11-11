@@ -1,8 +1,10 @@
 from att import *
 
+
 def test_all():
     export_xls(r'tmp/App中英泰对照翻译_test_v1.xls', open_android_files(), open_ios_files())
     import_xls(r'tmp/App中英泰对照翻译_test_v1.xls', open_android_files(), open_ios_files())
+
 
 def open_android_files_bus():
     return (
@@ -29,13 +31,20 @@ def open_android_files():
         XmlFile(r'..\Tracker-Android\app\src\main\res\values-th-rTH\strings.xml', 'th'),
         XmlFile(r'..\Tracker-Android\app\src\main\res\values-vi\strings.xml', 'vi'),
         XmlFile(r'..\Tracker-Android\app\src\main\res\values-pt\strings.xml', 'pt'),
-        # distar
-        XmlFile(r'..\Tracker-Android\app\src\distar\res\values\strings-flavor.xml', 'en', is_main=False),  # 不是主file, 不会往里面新增行
-        XmlFile(r'..\Tracker-Android\app\src\distar\res\values-zh-rCN\strings-flavor.xml', 'zh', is_main=False),
-        XmlFile(r'..\Tracker-Android\app\src\distar\res\values-th-rTH\strings-flavor.xml', 'th', is_main=False),
-        XmlFile(r'..\Tracker-Android\app\src\distar\res\values-vi\strings-flavor.xml', 'vi', is_main=False),
-        XmlFile(r'..\Tracker-Android\app\src\distar\res\values-pt\strings-flavor.xml', 'pt', is_main=False),
     )
+
+
+def open_android_files_flavor(flavor: str):
+    if flavor == 'tg':
+        # tg的文件在main目录下
+        flavor = 'main'
+    return {
+        XmlFile('../Tracker-Android/app/src/%(flavor)s/res/values\strings-flavor.xml' % {'flavor': flavor}, 'en', is_main=True),
+        XmlFile('../Tracker-Android/app/src/%(flavor)s/res/values-zh-rCN\strings-flavor.xml' % {'flavor': flavor}, 'zh', is_main=True),
+        XmlFile('../Tracker-Android/app/src/%(flavor)s/res/values-th-rTH\strings-flavor.xml' % {'flavor': flavor}, 'th', is_main=True),
+        XmlFile('../Tracker-Android/app/src/%(flavor)s/res/values-vi\strings-flavor.xml' % {'flavor': flavor}, 'vi', is_main=True),
+        XmlFile('../Tracker-Android/app/src/%(flavor)s/res/values-pt\strings-flavor.xml' % {'flavor': flavor}, 'pt', is_main=True),
+    }
 
 
 def open_web_files():
@@ -60,10 +69,14 @@ def open_ios_files():
 
 def main():
     # translate_files(open_android_files_bus())
-    translate_files(open_android_files_thirdparty(), False)
-    translate_files(open_android_files(), False)
-    translate_files(open_web_files(), False)
+    # translate_files(open_android_files_thirdparty(), False)
+    # translate_files(open_android_files(), False)
+    # translate_files(open_web_files(), False)
     # translate_files(open_ios_files())
+    translate_files(open_android_files_flavor('tg'), False)
+    translate_files(open_android_files_flavor('distar'), False)
+    translate_files(open_android_files_flavor('geckram'), False)
+    translate_files(open_android_files_flavor('blaupunkt'), False)
 
     # export_xls(r'tmp/tracker_v6.1.main.xls', open_android_files(), open_ios_files())
     # export_xls(r'tmp/tracker_v6.1.thirdparty.xls', open_android_files_thirdparty())
