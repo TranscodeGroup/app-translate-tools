@@ -11,7 +11,7 @@ import gtranslate as gt
 import typing
 import os
 import json
-from collections import Iterable, Iterator
+from collections.abc import Iterable, Iterator
 from functools import reduce
 
 REMIND_WHEN_ESCAPE = True
@@ -554,50 +554,50 @@ class ItemsUtil:
 
 def open_android_files_bus():
     return (
-        XmlFile(r'..\bus\src\main\res\values\strings.xml', 'en'),
-        XmlFile(r'..\bus\src\main\res\values-zh-rCN\strings.xml', 'zh'),
+        XmlFile(r'..\Tracker-Android\bus\src\main\res\values\strings.xml', 'en'),
+        XmlFile(r'..\Tracker-Android\bus\src\main\res\values-zh-rCN\strings.xml', 'zh'),
     )
 
 
 def open_android_files_thirdparty():
     return (
-        XmlFile(r'..\thirdparty\src\main\res\values\strings_code.xml', 'en'),
-        XmlFile(r'..\thirdparty\src\main\res\values-zh-rCN\strings_code.xml', 'zh'),
-        XmlFile(r'..\thirdparty\src\main\res\values-th-rTH\strings_code.xml', 'th'),
-        XmlFile(r'..\thirdparty\src\main\res\values-vi\strings_code.xml', 'vi'),
+        XmlFile(r'..\Tracker-Android\thirdparty\src\main\res\values\strings_code.xml', 'en'),
+        XmlFile(r'..\Tracker-Android\thirdparty\src\main\res\values-zh-rCN\strings_code.xml', 'zh'),
+        XmlFile(r'..\Tracker-Android\thirdparty\src\main\res\values-th-rTH\strings_code.xml', 'th'),
+        XmlFile(r'..\Tracker-Android\thirdparty\src\main\res\values-vi\strings_code.xml', 'vi'),
     )
 
 
 def open_android_files():
     return (
         # main
-        XmlFile(r'..\app\src\main\res\values\strings.xml', 'en'),
-        XmlFile(r'..\app\src\main\res\values-zh-rCN\strings.xml', 'zh'),
-        XmlFile(r'..\app\src\main\res\values-th-rTH\strings.xml', 'th'),
-        XmlFile(r'..\app\src\main\res\values-vi\strings.xml', 'vi'),
+        XmlFile(r'..\Tracker-Android\app\src\main\res\values\strings.xml', 'en'),
+        XmlFile(r'..\Tracker-Android\app\src\main\res\values-zh-rCN\strings.xml', 'zh'),
+        XmlFile(r'..\Tracker-Android\app\src\main\res\values-th-rTH\strings.xml', 'th'),
+        XmlFile(r'..\Tracker-Android\app\src\main\res\values-vi\strings.xml', 'vi'),
         # distar
-        XmlFile(r'..\app\src\distar\res\values\strings-flavor.xml', 'en', is_main=False),  # 不是主file, 不会往里面新增行
-        XmlFile(r'..\app\src\distar\res\values-zh-rCN\strings-flavor.xml', 'zh', is_main=False),
-        XmlFile(r'..\app\src\distar\res\values-th-rTH\strings-flavor.xml', 'th', is_main=False),
-        XmlFile(r'..\app\src\distar\res\values-vi\strings-flavor.xml', 'vi', is_main=False),
+        XmlFile(r'..\Tracker-Android\app\src\distar\res\values\strings-flavor.xml', 'en', is_main=False),  # 不是主file, 不会往里面新增行
+        XmlFile(r'..\Tracker-Android\app\src\distar\res\values-zh-rCN\strings-flavor.xml', 'zh', is_main=False),
+        XmlFile(r'..\Tracker-Android\app\src\distar\res\values-th-rTH\strings-flavor.xml', 'th', is_main=False),
+        XmlFile(r'..\Tracker-Android\app\src\distar\res\values-vi\strings-flavor.xml', 'vi', is_main=False),
     )
 
 
 def open_web_files():
     return (
-        JsonFile(r'..\..\Tracker-Vue\src\locales\en.json', 'en'),
-        JsonFile(r'..\..\Tracker-Vue\src\locales\zh.json', 'zh'),
-        JsonFile(r'..\..\Tracker-Vue\src\locales\th.json', 'th'),
-        JsonFile(r'..\..\Tracker-Vue\src\locales\vi.json', 'vi'),
+        JsonFile(r'..\Tracker-Vue\src\locales\en.json', 'en'),
+        JsonFile(r'..\Tracker-Vue\src\locales\zh.json', 'zh'),
+        JsonFile(r'..\Tracker-Vue\src\locales\th.json', 'th'),
+        JsonFile(r'..\Tracker-Vue\src\locales\vi.json', 'vi'),
     )
 
 
 def open_ios_files():
     return (
-        StringsFile(r'D:\GitHub\Tracker-iOS\SNProject\SNProject\Base.lproj\Localizable.strings', 'en'),
-        StringsFile(r'D:\GitHub\Tracker-iOS\SNProject\SNProject\zh.lproj\Localizable.strings', 'zh'),
-        StringsFile(r'D:\GitHub\Tracker-iOS\SNProject\SNProject\th.lproj\Localizable.strings', 'th'),
-        StringsFile(r'D:\GitHub\Tracker-iOS\SNProject\SNProject\vi.lproj\Localizable.strings', 'vi'),
+        StringsFile(r'..\Tracker-iOS\SNProject\SNProject\Base.lproj\Localizable.strings', 'en'),
+        StringsFile(r'..\Tracker-iOS\SNProject\SNProject\zh.lproj\Localizable.strings', 'zh'),
+        StringsFile(r'..\Tracker-iOS\SNProject\SNProject\th.lproj\Localizable.strings', 'th'),
+        StringsFile(r'..\Tracker-iOS\SNProject\SNProject\vi.lproj\Localizable.strings', 'vi'),
     )
 
 
