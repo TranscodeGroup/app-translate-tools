@@ -73,7 +73,10 @@ class XmlFile(File):
                     new_text = item[self.lang]
                     # 双引号括住的字符串, 需要特殊处理
                     match = REG_QUOTE_TEXT.fullmatch(old_text)
-                    if match and match.group('content') == new_text:
+                    if new_text is None:
+                        # @item_lang_is_none: 当items缺少某种语言的翻译时, 会是None, 需要跳过
+                        p('skip', '   [%(lang)s] %(key)s: new_text is None' % {'key': key, 'lang': self.lang})
+                    elif match and match.group('content') == new_text:
                         p('skip', old_text, '=>', new_text)
                     elif old_text == new_text:  # 文本相同, 不保存
                         pass

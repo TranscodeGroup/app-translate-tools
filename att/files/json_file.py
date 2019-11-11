@@ -57,7 +57,10 @@ class JsonFile(File):
             item = items[key]
             if item:
                 new_text = item[self.lang]
-                if new_text != v:
+                if new_text is None:
+                    # @item_lang_is_none
+                    p('skip', '   [%(lang)s] %(key)s: new_text is None' % {'key': key, 'lang': self.lang})
+                elif new_text != v:
                     self._dict[k] = new_text
 
     def to_items(self, items):

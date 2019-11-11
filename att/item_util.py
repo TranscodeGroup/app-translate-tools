@@ -12,6 +12,7 @@ COL_ENGLISH = 'English'
 COL_CHINESE = 'Chinese'
 COL_THAI = 'Thai'
 COL_VIET = 'Vietnamese'
+COL_PORT = 'Portuguese'
 
 
 class FieldConverter:
@@ -73,10 +74,12 @@ class ItemsUtil:
                 ios_key=fc.from_text(df[COL_IOS_KEY][i]) if df.get(COL_IOS_KEY) is not None else None,
                 web_key=fc.from_text(df[COL_WEB_KEY][i]) if df.get(COL_WEB_KEY) is not None else None,
                 untranslatable=fc.from_bool(df[COL_UNTRANSLATABLE][i]) if df.get(COL_UNTRANSLATABLE) is not None else False,
-                en=fc.from_text(df[COL_ENGLISH][i]),
-                zh=fc.from_text(df[COL_CHINESE][i]),
-                th=fc.from_text(df[COL_THAI][i]),
-                vi=fc.from_text(df[COL_VIET][i]),
+                # @item_lang_is_none
+                en=fc.from_text(df[COL_ENGLISH][i]) if df.get(COL_ENGLISH) is not None else None,
+                zh=fc.from_text(df[COL_CHINESE][i]) if df.get(COL_CHINESE) is not None else None,
+                th=fc.from_text(df[COL_THAI][i]) if df.get(COL_THAI) is not None else None,
+                vi=fc.from_text(df[COL_VIET][i]) if df.get(COL_VIET) is not None else None,
+                pt=fc.from_text(df[COL_PORT][i]) if df.get(COL_PORT) is not None else None,
             )
             if item.key:
                 items[AndroidKey(item.key)] = item
@@ -89,8 +92,8 @@ class ItemsUtil:
 
     @classmethod
     def write_items_to_xls(cls, file, items):
-        all_columns = (COL_KEY, COL_IOS_KEY, COL_WEB_KEY, COL_UNTRANSLATABLE, COL_ENGLISH, COL_CHINESE, COL_THAI, COL_VIET)
-        out_columns = (COL_KEY, COL_IOS_KEY, COL_WEB_KEY, COL_ENGLISH, COL_CHINESE, COL_THAI, COL_VIET)
+        all_columns = (COL_KEY, COL_IOS_KEY, COL_WEB_KEY, COL_UNTRANSLATABLE, COL_ENGLISH, COL_CHINESE, COL_THAI, COL_VIET, COL_PORT)
+        out_columns = (COL_KEY, COL_IOS_KEY, COL_WEB_KEY, COL_ENGLISH, COL_CHINESE, COL_THAI, COL_VIET, COL_PORT)
 
         df = pd.DataFrame(columns=all_columns)
         fc = FieldConverter.create(file)
@@ -106,6 +109,7 @@ class ItemsUtil:
                     fc.to_text(item.zh),
                     fc.to_text(item.th),
                     fc.to_text(item.vi),
+                    fc.to_text(item.pt),
                 )
         df.to_excel(file, index=False, columns=out_columns, na_rep='')
 

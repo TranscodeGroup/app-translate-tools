@@ -70,7 +70,10 @@ class StringsFile(File):
             if item:
                 old_text = line.value
                 new_text = item[self.lang]
-                if old_text != new_text:
+                if new_text is None:
+                    # @item_lang_is_none
+                    p('skip', '   [%(lang)s] %(key)s: new_text is None' % {'key': key, 'lang': self.lang})
+                elif old_text != new_text:
                     line.value = new_text
 
     def to_items(self, items):

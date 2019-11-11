@@ -9,6 +9,7 @@ import json
 from collections.abc import Iterable, Iterator
 from functools import reduce
 
+from .item import Item
 from .item_util import ItemsUtil
 from .translate import translate
 from .files import *
@@ -27,7 +28,7 @@ def export_xls(out_xls, *files_tuple):
         key_name = ItemsUtil.get_key_name_from_items(new_items)  # 可能为: key/ios_key/web_key
         for key, item in new_items.items():
             for base_item in base_items.values():
-                if not base_item[key_name] and item.zh == base_item.zh and item.en == base_item.en and item.th == base_item.th and item.vi == base_item.vi:
+                if not base_item[key_name] and item.all_lang_equals(base_item):
                     # base_item不存在[key_name]的情况下, 若所有语言的翻译都相同, 说明是同一个字符串, 给base_item添加[key_name]
                     base_item[key_name] = item[key_name]
                     break

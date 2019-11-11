@@ -2,7 +2,7 @@
 from .utils import *
 
 class Item(Dict):
-    def __init__(self, *, key=None, ios_key=None, web_key=None, untranslatable=False, auto_translate=True, en='', zh='', th='', vi=''):
+    def __init__(self, *, key=None, ios_key=None, web_key=None, untranslatable=False, auto_translate=True, en='', zh='', th='', vi='', pt=''):
         super().__init__()
         self.key = key
         self.ios_key = ios_key
@@ -13,6 +13,10 @@ class Item(Dict):
         self.zh = zh
         self.th = th
         self.vi = vi
+        self.pt = pt
+
+    def all_lang_equals(self, other):
+        return self.en == other.en and self.zh == other.zh and self.th == other.th and self.vi == other.vi and self.pt == other.pt
 
 
 class Key:
