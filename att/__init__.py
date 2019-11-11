@@ -155,7 +155,10 @@ def import_xls(in_xls, *files_tuple):
         ItemsUtil.cover_items_to_files(files, new_items)
 
 
-def translate_files(files: typing.Tuple[File, ...]):
+def translate_files(files: typing.Tuple[File, ...], translate_all_lang=True):
+    """
+    :param translate_all_lang: 针对缺少一种语言翻译的key, 是否重新翻译它的所有语言
+    """
     def process_translate(files: typing.Tuple[File, ...], items: typing.Dict[str, Item]):
         main_lang_files = [(f.lang, f) for f in files if f.is_main]
         for key, item in ((k, v) for k, v in items.items() if not v.untranslatable and v.auto_translate):
@@ -163,20 +166,22 @@ def translate_files(files: typing.Tuple[File, ...]):
             has_translate_files = [(lang, f) for lang, f in main_lang_files if item[lang]]
             if len(has_translate_files) > 0 and len(has_translate_files) < len(main_lang_files):
                 source = Dict(lang=has_translate_files[0][0], text=item[has_translate_files[0][0]])  # 将第一个有翻译的语言作为源语言
-                for lang, file in main_lang_files:  # 因为存在将zh写在en的file里的情况, 故需要把所有的file都翻译一遍
+                for lang, file in main_lang_files:
                     try:
                         old_text = item[lang]
-                        new_text = translate(source.text, 'auto', lang)  # 自动判断源语言
-                        replace = True
-                        if old_text and old_text != new_text:
-                            if source.lang != lang:  # 当前的使用场景下, 大多会将zh写在en的file里, 这种情况下不提示...
-                                p('remind', '(translate %s => %s)%s:\n%s\n%s' % (source.lang, lang, key, old_text, new_text))
-                                replace = input('是否修改该字符串:(y)') in 'yY'
-                        if replace:
-                            item[lang] = new_text
-                            p('info', 'translate %s => %s >> %s => %s' % (source.lang, lang, source.text, item[lang]))
-                            if not old_text:  # 给file添加空行, see: @add_empty_line_for_cover
-                                file.add(key, '')
+                        # 因为存在将zh写在en的file里的情况, 故大多数情况下需要把所有的file都翻译一遍
+                        if translate_all_lang or not old_text:
+                            new_text = translate(source.text, 'auto', lang)  # 自动判断源语言
+                            replace = True
+                            if old_text and old_text != new_text:
+                                if source.lang != lang:  # 当前的使用场景下, 大多会将zh写在en的file里, 这种情况下不提示...
+                                    p('remind', '(translate %s => %s)%s:\n%s\n%s' % (source.lang, lang, key, old_text, new_text))
+                                    replace = input('是否修改该字符串:(y)') in 'yY'
+                            if replace:
+                                item[lang] = new_text
+                                p('info', 'translate %s => %s >> %s => %s' % (source.lang, lang, source.text, item[lang]))
+                                if not old_text:  # 给file添加空行, see: @add_empty_line_for_cover
+                                    file.add(key, '')
                     except Exception as e:
                         p('warn', 'translate %s => %s >> %s =x %s' % (source.lang, lang, source.text, e))
 

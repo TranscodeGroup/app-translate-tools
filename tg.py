@@ -60,18 +60,18 @@ def open_ios_files():
 
 def main():
     # translate_files(open_android_files_bus())
-    # translate_files(open_android_files_thirdparty())
-    # translate_files(open_android_files())
-    # translate_files(open_web_files())
+    translate_files(open_android_files_thirdparty(), False)
+    translate_files(open_android_files(), False)
+    translate_files(open_web_files(), False)
     # translate_files(open_ios_files())
 
     # export_xls(r'tmp/tracker_v6.1.main.xls', open_android_files(), open_ios_files())
     # export_xls(r'tmp/tracker_v6.1.thirdparty.xls', open_android_files_thirdparty())
     # export_xls(r'tmp/tracker_v6.1.vue.xls', open_web_files())
 
-    import_xls(r'tmp/-App tracker_v5.main.xls', open_android_files(), open_ios_files())
-    import_xls(r'tmp/-App tracker_v5.thirdparty.xls', open_android_files_thirdparty())
-    import_xls(r'tmp/-App tracker_v5.vue.xls', open_web_files())
+    # import_xls(r'tmp/-App tracker_v5.main.xls', open_android_files(), open_ios_files())
+    # import_xls(r'tmp/-App tracker_v5.thirdparty.xls', open_android_files_thirdparty())
+    # import_xls(r'tmp/-App tracker_v5.vue.xls', open_web_files())
 
     # import_xls(r'tmp/tracker_vue_v3.xls', open_web_files())
     # import_xls(r'tmp/Tracker_v1.xls', open_android_files(), open_ios_files())
