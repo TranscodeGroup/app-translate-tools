@@ -38,13 +38,13 @@ def open_android_files_flavor(flavor: str):
     if flavor == 'tg':
         # tg的文件在main目录下
         flavor = 'main'
-    return {
+    return (
         XmlFile('../Tracker-Android/app/src/%(flavor)s/res/values\strings-flavor.xml' % {'flavor': flavor}, 'en', is_main=True),
         XmlFile('../Tracker-Android/app/src/%(flavor)s/res/values-zh-rCN\strings-flavor.xml' % {'flavor': flavor}, 'zh', is_main=True),
         XmlFile('../Tracker-Android/app/src/%(flavor)s/res/values-th-rTH\strings-flavor.xml' % {'flavor': flavor}, 'th', is_main=True),
         XmlFile('../Tracker-Android/app/src/%(flavor)s/res/values-vi\strings-flavor.xml' % {'flavor': flavor}, 'vi', is_main=True),
         XmlFile('../Tracker-Android/app/src/%(flavor)s/res/values-pt\strings-flavor.xml' % {'flavor': flavor}, 'pt', is_main=True),
-    }
+    )
 
 
 def open_web_files():
@@ -73,14 +73,26 @@ def main():
     # translate_files(open_android_files(), False)
     # translate_files(open_web_files(), False)
     # translate_files(open_ios_files())
-    translate_files(open_android_files_flavor('tg'), False)
-    translate_files(open_android_files_flavor('distar'), False)
-    translate_files(open_android_files_flavor('geckram'), False)
-    translate_files(open_android_files_flavor('blaupunkt'), False)
+    # translate_files(open_android_files_flavor('tg'), False)
+    # translate_files(open_android_files_flavor('distar'), False)
+    # translate_files(open_android_files_flavor('geckram'), False)
+    # translate_files(open_android_files_flavor('blaupunkt'), False)
 
-    # export_xls(r'tmp/tracker_v6.1.main.xls', open_android_files(), open_ios_files())
-    # export_xls(r'tmp/tracker_v6.1.thirdparty.xls', open_android_files_thirdparty())
-    # export_xls(r'tmp/tracker_v6.1.vue.xls', open_web_files())
+    export_xls(r'tmp/20191122_tg_tracker.main.xls', open_android_files(), open_ios_files())
+    export_xls(r'tmp/20191122_tg_tracker.tg.xls', open_android_files_flavor('tg'))
+    export_xls(r'tmp/20191122_tg_tracker.distar.xls', open_android_files_flavor('distar'))
+    export_xls(r'tmp/20191122_tg_tracker.geckram.xls', open_android_files_flavor('geckram'))
+    export_xls(r'tmp/20191122_tg_tracker.blaupunkt.xls', open_android_files_flavor('blaupunkt'))
+    export_xls(r'tmp/20191122_tg_tracker_vue.xls', open_web_files())
+    export_xls(r'tmp/20191122_tg_thirdparty.xls', open_android_files_thirdparty())
+
+    import_xls(r'tmp/20191122_tg_tracker.main.xls', open_android_files(), open_ios_files())
+    import_xls(r'tmp/20191122_tg_tracker.tg.xls', open_android_files_flavor('tg'))
+    import_xls(r'tmp/20191122_tg_tracker.distar.xls', open_android_files_flavor('distar'))
+    import_xls(r'tmp/20191122_tg_tracker.geckram.xls', open_android_files_flavor('geckram'))
+    import_xls(r'tmp/20191122_tg_tracker.blaupunkt.xls', open_android_files_flavor('blaupunkt'))
+    import_xls(r'tmp/20191122_tg_tracker_vue.xls', open_web_files())
+    import_xls(r'tmp/20191122_tg_thirdparty.xls', open_android_files_thirdparty())
 
     # import_xls(r'tmp/-App tracker_v5.main.xls', open_android_files(), open_ios_files())
     # import_xls(r'tmp/-App tracker_v5.thirdparty.xls', open_android_files_thirdparty())
