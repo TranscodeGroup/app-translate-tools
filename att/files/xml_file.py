@@ -14,6 +14,7 @@ class XmlFile(File):
     @staticmethod
     def read(file):
         if not os.path.exists(file):
+            p('warn', '%(file)s no exists.' % {'file': file})
             return dom.parseString('<resources>\n</resources>')
         root = dom.parse(file)
         resources_node = root.getElementsByTagName('resources')[0]

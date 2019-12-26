@@ -28,9 +28,9 @@ def export_xls(out_xls, *files_tuple):
         key_name = ItemsUtil.get_key_name_from_items(new_items)  # 可能为: key/ios_key/web_key
         for key, item in new_items.items():
             for base_item in base_items.values():
-                if not base_item[key_name] and item.all_lang_equals(base_item):
+                if not getattr(base_item, key_name) and item.all_lang_equals(base_item):
                     # base_item不存在[key_name]的情况下, 若所有语言的翻译都相同, 说明是同一个字符串, 给base_item添加[key_name]
-                    base_item[key_name] = item[key_name]
+                    setattr(base_item, key_name, getattr(item, key_name))
                     break
             else:  # 没有找到三语相同的时, 需要添加item
                 items[key] = item
@@ -85,7 +85,7 @@ def import_xls(in_xls, *files_tuple):
                     else:
                         pass
 
-    def process_diff_all(files: typing.Tuple[File, ...], new_items: typing.Dict[str, Item], item_key_name: str):
+    def process_diff_all(files: typing.Tuple[File, ...], new_items: typing.Dict[str, Item]):
         """
         以new_items为准, 处理删除和新增
 
@@ -95,8 +95,6 @@ def import_xls(in_xls, *files_tuple):
         :return:
         """
         items = ItemsUtil.read_files_to_items(files)
-        if item_key_name:  # 过滤android或ios的item
-            new_items = Dict((k, v) for k, v in new_items.items() if str(k) == v[item_key_name])
         lang_files = list(map(lambda f: (f.lang, f), files))  # (注意: 有可能存在多个file的lang相同的情况...)
         for key, item in items.items():  # 遍历items
             new_item = new_items[key]
@@ -151,7 +149,8 @@ def import_xls(in_xls, *files_tuple):
     # ItemsUtil.cover_items_to_files(ios_files, new_items)
 
     for files in files_tuple:
-        process_diff_all(files, new_items, ItemsUtil.get_key_name_from_files(files))
+        key_class = ItemsUtil.get_key_class_from_files(files)
+        process_diff_all(files, Dict({k: v for k, v in new_items.items() if isinstance(k, key_class)}))
         ItemsUtil.cover_items_to_files(files, new_items)
 
 

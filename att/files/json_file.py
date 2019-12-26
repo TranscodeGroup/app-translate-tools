@@ -8,6 +8,7 @@ class JsonFile(File):
     @staticmethod
     def read(file):
         if not os.path.exists(file):
+            p('warn', '%(file)s no exists.' % {'file': file})
             return {}
         obj = {}
         with open(file, mode='r', encoding='utf-8') as f:

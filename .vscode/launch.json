@@ -12,6 +12,14 @@
             "console": "integratedTerminal"
         },
         {
+   
+            "name": "selpic.py",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/selpic.py",
+            "console": "integratedTerminal"
+        },
+        {
             "name": "Python: Current File",
             "type": "python",
             "request": "launch",
