@@ -7,6 +7,7 @@ import typing
 SORTED_BY_TEXT = False
 CLEAR_UNTRANSLATE_LANG = False
 
+COL_INDEX = 'index'
 COL_KEY = 'KEY'
 COL_IOS_KEY = 'IOS_KEY'
 COL_WEB_KEY = 'WEB_KEY'
@@ -72,7 +73,7 @@ class ItemsUtil:
         df = pd.read_excel(file)
         fc = FieldConverter.create(file)
         # df.fillna('', inplace=True) # 将所有的NaN替换成''
-        lang_columns = tuple(filter(lambda n: n not in COLUMNS_DEFAULT, df.columns))
+        lang_columns = tuple(filter(lambda n: n not in COLUMNS_DEFAULT and n != COL_INDEX, df.columns))
         for i in range(len(df)):
             item = Item(
                 key=fc.from_text(df[COL_KEY][i]),
@@ -126,7 +127,7 @@ class ItemsUtil:
 
         out_columns = list(df.columns)
         out_columns.remove(COL_UNTRANSLATABLE)
-        df.to_excel(file, index=True, columns=out_columns, na_rep='')
+        df.to_excel(file, index=True, index_label=COL_INDEX, columns=out_columns, na_rep='')
 
     @classmethod
     def read_files_to_items(cls, files):
