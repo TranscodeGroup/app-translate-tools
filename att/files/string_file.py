@@ -96,6 +96,6 @@ class StringsFile(File):
     def to_file(self, file):
         if not os.path.exists(file):
             os.makedirs(os.path.dirname(file), exist_ok=True)
-        with open(file, mode='w', encoding='utf-8', newline='\n') as f:
+        with open(file, mode='w', encoding='utf-8', newline=None) as f:
             for line in self._lines:
                 f.writelines(line.text())

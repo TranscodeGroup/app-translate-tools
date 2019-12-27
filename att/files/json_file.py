@@ -76,5 +76,5 @@ class JsonFile(File):
     def to_file(self, file):
         if not os.path.exists(file):
             os.makedirs(os.path.dirname(file), exist_ok=True)
-        with open(file, mode='w', encoding='utf-8', newline='\n') as f:
+        with open(file, mode='w', encoding='utf-8', newline=None) as f:
             json.dump(self.dict_to_obj(self._dict), f, indent=2, ensure_ascii=False)

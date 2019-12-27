@@ -122,7 +122,7 @@ class XmlFile(File):
         content = str_io.getvalue().replace('&quot;', '"').replace('&gt;', '>')
         if not os.path.exists(file):  # 保证目录存在, 方便之后创建文件
             os.makedirs(os.path.dirname(file), exist_ok=True)
-        with open(file, mode='w', encoding='utf-8', newline='\n') as w:
+        with open(file, mode='w', encoding='utf-8', newline=None) as w:
             w.write(content)
 
 
