@@ -4,6 +4,9 @@ from .item import *
 from .files import *
 import typing
 
+SORTED_BY_TEXT = False
+CLEAR_UNTRANSLATE_LANG = False
+
 COL_KEY = 'KEY'
 COL_IOS_KEY = 'IOS_KEY'
 COL_WEB_KEY = 'WEB_KEY'
@@ -94,8 +97,12 @@ class ItemsUtil:
     def write_items_to_xls(cls, file, items):
         df = pd.DataFrame(columns=COLUMNS_DEFAULT)
         fc = FieldConverter.create(file)
-        sorted_items = sorted(items.values(), key=lambda i: i['en'].lower())  # 按en排序
-        for item in sorted_items:
+        item_list = []
+        if SORTED_BY_TEXT:
+            item_list = sorted(items.values(), key=lambda i: i['en'].lower())  # 按en排序
+        else:
+            item_list = items.values()
+        for item in item_list:
             if not item.untranslatable:  # 只输出需要翻译的内容 @write_items_to_xls_only_translatable
                 # 新列的index
                 index = len(df)
@@ -126,6 +133,17 @@ class ItemsUtil:
         items = Dict()
         for f in files:
             f.to_items(items)
+
+        if CLEAR_UNTRANSLATE_LANG:
+            # 若翻译和en相同, 则认为这是未翻译的, 需要置为''
+            for key, item in items.items():
+                langs = list(item.keys())
+                langs.remove('en')
+                default_text = item['en']
+                for lang in langs:
+                    if item[lang] == default_text:
+                        p('info', f'- untranslate [{lang}] {key}: {item[lang]}')
+                        item[lang] = ''
         return items
 
     @classmethod
@@ -143,7 +161,6 @@ class ItemsUtil:
     def get_key_name_from_files(cls, files: typing.Tuple[File]):
         return cls.get_key_class_from_files(files).key_name()
 
-    
     @classmethod
     def get_key_name_from_items(cls, items: typing.Dict[Key, Item]):
         # 认为items的key_name都是相同的, 从第一个item中获取key_name

@@ -91,7 +91,6 @@ def import_xls(in_xls, *files_tuple):
 
         :param files:
         :param new_items:
-        :param item_key_name:  new_items的key使用的Item的哪个字段; 可选 'key', 'ios_key';
         :return:
         """
         items = ItemsUtil.read_files_to_items(files)

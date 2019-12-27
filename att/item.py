@@ -39,6 +39,15 @@ class Item(dict):
                 return False
         return True
 
+    def all_lang_equals_for_only_en_zh(self, other):
+        """
+        只比较en和zh
+        """
+        for lang in ('en', 'zh'):
+            if self[lang] != other[lang]:
+                return False
+        return True
+
 
 class Key:
     """
