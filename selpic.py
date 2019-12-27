@@ -40,8 +40,9 @@ def main():
     # export_xls('./tmp/2019-12-26.xls', open_android_files(), open_ios_files())
     # import_xls('./tmp/2019-12-26.xlsx', open_android_files(), open_ios_files())
 
-    export_xls('./tmp/printer-2019-12-27-merge.xls', open_ios_files(), open_android_files())
-    import_xls('./tmp/printer-2019-12-27-merge.xls', open_ios_files(), open_android_files(),)
+    # export_xls('./tmp/printer-2019-12-27-merge.xls', open_ios_files(), open_android_files())
+    # import_xls('./tmp/printer-2019-12-27-merge.xls', open_ios_files(), open_android_files(),)
+    export_xls('./tmp/printer-test.xls', open_ios_files(), open_android_files(),)
 
 
 if __name__ == "__main__":

@@ -126,7 +126,7 @@ class ItemsUtil:
 
         out_columns = list(df.columns)
         out_columns.remove(COL_UNTRANSLATABLE)
-        df.to_excel(file, index=False, columns=out_columns, na_rep='')
+        df.to_excel(file, index=True, columns=out_columns, na_rep='')
 
     @classmethod
     def read_files_to_items(cls, files):
