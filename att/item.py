@@ -20,10 +20,22 @@ class Item(dict):
         return None
 
     def all_lang_equals(self, other):
+        """
+        所有语言的翻译完全相等
+        """
         if self.keys() != other.keys():
             return False
         for key in self.keys():
             if self[key] != other[key]:
+                return False
+        return True
+
+    def all_lang_equals_for_present(self, other):
+        """
+        翻译了的部分语言的翻译都是相等的, 未翻译的不算
+        """
+        for lang, text in self.items():
+            if other[lang] and other[lang] != text:
                 return False
         return True
 
@@ -51,7 +63,7 @@ class Key:
     def __str__(self):
         return self.name
 
-    def __repr__(self): # 控制台打印专用
+    def __repr__(self):  # 控制台打印专用
         return self.key_name() + ':' + self.name
 
     # 所谓'key_name'是指Item的三种key: key, ios_key, web_key
