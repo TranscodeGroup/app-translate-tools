@@ -5,9 +5,11 @@ import re
 from ..item import *
 from .file import *
 
-REMIND_WHEN_ESCAPE = True
 REG_QUOTE_TEXT = re.compile(r'^"(?P<content>.*?)\s*"$')
 REG_REF_STRING_TEXT = re.compile(r'@string/\w+')
+# 除`\n`以外的`\`
+# @text_newline_sep
+REG_BACKSLASH = re.compile(r'\\(?!n)')
 
 
 class XmlFile(File):
@@ -70,7 +72,7 @@ class XmlFile(File):
             if text_node:
                 item = items[key]
                 if item:
-                    old_text = text_node.data
+                    old_text = NodeUtil.get_string_in_text_node(text_node)
                     new_text = item[self.lang]
                     # 双引号括住的字符串, 需要特殊处理
                     match = REG_QUOTE_TEXT.fullmatch(old_text)
@@ -82,22 +84,8 @@ class XmlFile(File):
                     elif old_text == new_text:  # 文本相同, 不保存
                         pass
                     else:
-                        # `'`和`\`需要转义
-                        if "'" in old_text or '\\' in old_text \
-                                or "'" in new_text or '\\' in new_text:
-                            # 先替换`\`=>`\\`, 再替换`'`=>`\'`
-                            new_text = new_text.replace('\\', '\\\\').replace("'", "\\'")
-                            if new_text != old_text:
-                                if REMIND_WHEN_ESCAPE:
-                                    p('remind', '%s:\n%s\n%s' % (key, old_text, new_text))
-                                    if input('是否修改该字符串:(y)') not in 'yY':  # ''/'y'/'Y'表示'是'
-                                        continue  # 不保存
-                                else:
-                                    p('warn', key, old_text, '=>', new_text)
-                            else:
-                                continue  # 文本相同, 跳过保存
                         # 保存
-                        text_node.data = new_text
+                        NodeUtil.set_string_in_text_node(text_node, new_text)
 
     def to_items(self, items):
         string_nodes = self._dom.getElementsByTagName('string')
@@ -111,7 +99,7 @@ class XmlFile(File):
                                 untranslatable=node.getAttribute('translatable') == 'false',
                                 auto_translate=not (node.getAttribute('translateAuto') == 'false'))
                     items[key] = item
-                item[self.lang] = text_node.data
+                item[self.lang] = NodeUtil.get_string_in_text_node(text_node)
 
     def to_file(self, file):
         str_io = io.StringIO()
@@ -139,6 +127,21 @@ class NodeUtil:
                     'length': len(node.childNodes),
                 })
             return None
+
+    @staticmethod
+    def get_string_in_text_node(node) -> str:
+        # android的string中是存在转义的:
+        # \' -> '
+        # \" -> ", string中是可以直接写`"`的, 但有些代码写了`\"`, 故还是要转换下
+        # \\ -> \
+        # \n -> 不处理, item中用`\n`表示换行
+        # @text_newline_sep
+        return node.data.replace("\\'", "'").replace('\\"', '"').replace('\\\\', '\\')
+
+    @staticmethod
+    def set_string_in_text_node(node, value):
+        # 同上, 反向转换
+        node.data = re.sub(REG_BACKSLASH, '\\\\', value).replace("'", "\\'")
 
     @staticmethod
     def to_text(node: dom.Node) -> str:

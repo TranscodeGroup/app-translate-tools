@@ -41,21 +41,30 @@ def invert_placeholder(text: str) -> str:
             type_ = type_[0].lower()
         return '%{index}${type}'.format(index=index, type=type_)
 
-    return re.sub(r'(?P<type>[A-Z]{1,2})(?P<index>[A-Z]{4})', repl, text)
+    return re.sub(r'(?P<type>([A-Z])\2?)(?P<index>([A-Z])\4{3})', repl, text)
 
 
 def translate(text, from_lang='auto', to_lang='auto'):
-    r = gt.translate(
-        convert_placeholder(text), to_language=convert_lang(to_lang), language=convert_lang(from_lang),
-        # proxies=PROXIES,  # 代理, 不在代码中写死代理， 通过环境变量中设置$https_proxy替代
-        verify=True,  # 设为False可以关闭证书校验, 方便调试
-        timeout=5,  # 5秒超时
-        headers={
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.81 Safari/537.36'
-        }
-    )
-    return invert_placeholder(r)
+    # gt不支持多行文本, 故须手动拆行
+    # @text_newline_sep
+    texts = convert_placeholder(text).replace('\\n', '\n').splitlines()
+    results = []
+    for t in texts:
+        results.append(gt.translate(
+            t, to_language=convert_lang(to_lang), language=convert_lang(from_lang),
+            # proxies=PROXIES,  # 代理, 不在代码中写死代理， 通过环境变量中设置$https_proxy替代
+            verify=True,  # 设为False可以关闭证书校验, 方便调试
+            timeout=5,  # 5秒超时
+            headers={
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.81 Safari/537.36'
+            }
+        ))
+    # 当前使用`\n`来分隔行
+    # @text_newline_sep
+    return invert_placeholder('\\n'.join(results))
 
 
 if __name__ == "__main__":
     print(translate('fuck %1$s', to_lang='zh-CN'))
+    print(translate('STARTING UP DEVICE', to_lang='it'))
+    print(translate('i\\nlove\\nyou\nend', to_lang='zh-CN'))
