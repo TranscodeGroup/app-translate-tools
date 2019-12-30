@@ -7,9 +7,6 @@ from .file import *
 
 REG_QUOTE_TEXT = re.compile(r'^"(?P<content>.*?)\s*"$')
 REG_REF_STRING_TEXT = re.compile(r'@string/\w+')
-# 除`\n`以外的`\`
-# @text_newline_sep
-REG_BACKSLASH = re.compile(r'\\(?!n)')
 
 
 class XmlFile(File):
@@ -72,7 +69,7 @@ class XmlFile(File):
             if text_node:
                 item = items[key]
                 if item:
-                    old_text = NodeUtil.get_string_in_text_node(text_node)
+                    old_text = NodeUtil.get_text_in_text_node(text_node)
                     new_text = item[self.lang]
                     # 双引号括住的字符串, 需要特殊处理
                     match = REG_QUOTE_TEXT.fullmatch(old_text)
@@ -85,7 +82,7 @@ class XmlFile(File):
                         pass
                     else:
                         # 保存
-                        NodeUtil.set_string_in_text_node(text_node, new_text)
+                        NodeUtil.set_text_in_text_node(text_node, new_text)
 
     def to_items(self, items):
         string_nodes = self._dom.getElementsByTagName('string')
@@ -99,7 +96,7 @@ class XmlFile(File):
                                 untranslatable=node.getAttribute('translatable') == 'false',
                                 auto_translate=not (node.getAttribute('translateAuto') == 'false'))
                     items[key] = item
-                item[self.lang] = NodeUtil.get_string_in_text_node(text_node)
+                item[self.lang] = NodeUtil.get_text_in_text_node(text_node)
 
     def to_file(self, file):
         str_io = io.StringIO()
@@ -129,19 +126,13 @@ class NodeUtil:
             return None
 
     @staticmethod
-    def get_string_in_text_node(node) -> str:
-        # android的string中是存在转义的:
-        # \' -> '
-        # \" -> ", string中是可以直接写`"`的, 但有些代码写了`\"`, 故还是要转换下
-        # \\ -> \
-        # \n -> 不处理, item中用`\n`表示换行
-        # @text_newline_sep
-        return node.data.replace("\\'", "'").replace('\\"', '"').replace('\\\\', '\\')
+    def get_text_in_text_node(node) -> str:
+        return convert_string_to_text(node.data)
 
     @staticmethod
-    def set_string_in_text_node(node, value):
-        # 同上, 反向转换
-        node.data = re.sub(REG_BACKSLASH, '\\\\', value).replace("'", "\\'")
+    def set_text_in_text_node(node, text):
+        # xml中双引号不需要转义
+        node.data = convert_text_to_string(text, replace_double_quote=False)
 
     @staticmethod
     def to_text(node: dom.Node) -> str:
