@@ -9,10 +9,13 @@
             "type": "python",
             "request": "launch",
             "program": "${workspaceFolder}/tg.py",
+            "env": {
+                "https_proxy": "http://127.0.0.1:1080",
+                "http_proxy": "http://127.0.0.1:1080",
+            },
             "console": "integratedTerminal"
         },
         {
-   
             "name": "selpic.py",
             "type": "python",
             "request": "launch",

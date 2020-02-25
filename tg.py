@@ -68,11 +68,10 @@ def open_ios_files():
         StringsFile(r'..\Tracker-iOS\SNProject\SNProject\pt.lproj\Localizable.strings', 'pt'),
     )
 
-
-def main():
+def translate_all():
     # translate_files(open_android_files_bus())
     # translate_files(open_android_files_thirdparty(), False)
-    # translate_files(open_android_files(), False)
+    translate_files(open_android_files(), True)
     # translate_files(open_web_files(), False)
     # translate_files(open_ios_files())
     # translate_files(open_android_files_flavor('tg'), False)
@@ -80,6 +79,7 @@ def main():
     # translate_files(open_android_files_flavor('geckram'), False)
     # translate_files(open_android_files_flavor('blaupunkt'), False)
 
+def export_import_all():
     export_xls(r'tmp/20191122_tg_tracker.main.xls', open_android_files(), open_ios_files())
     export_xls(r'tmp/20191122_tg_tracker.tg.xls', open_android_files_flavor('tg'))
     export_xls(r'tmp/20191122_tg_tracker.distar.xls', open_android_files_flavor('distar'))
@@ -95,6 +95,10 @@ def main():
     import_xls(r'tmp/20191122_tg_tracker.blaupunkt.xls', open_android_files_flavor('blaupunkt'))
     import_xls(r'tmp/20191122_tg_tracker_vue.xls', open_web_files())
     import_xls(r'tmp/20191122_tg_thirdparty.xls', open_android_files_thirdparty())
+
+def main():
+    translate_all()
+    # export_import_all()
 
     # import_xls(r'tmp/-App tracker_v5.main.xls', open_android_files(), open_ios_files())
     # import_xls(r'tmp/-App tracker_v5.thirdparty.xls', open_android_files_thirdparty())
