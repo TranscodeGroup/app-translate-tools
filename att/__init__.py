@@ -164,8 +164,9 @@ def translate_files(files: typing.Tuple[File, ...], translate_all_lang=True):
             has_translate_files = [(lang, f) for lang, f in main_lang_files if item[lang]]
             if len(has_translate_files) > 0 and len(has_translate_files) < len(main_lang_files):
                 source = Dict(lang=has_translate_files[0][0], text=item[has_translate_files[0][0]])  # 将第一个有翻译的语言作为源语言
-                for lang, file in main_lang_files:
-                    try:
+                try:
+                    temp_result = Dict()
+                    for lang, file in main_lang_files:
                         old_text = item[lang]
                         # 因为存在将zh写在en的file里的情况, 故大多数情况下需要把所有的file都翻译一遍
                         if translate_all_lang or not old_text:
@@ -176,12 +177,17 @@ def translate_files(files: typing.Tuple[File, ...], translate_all_lang=True):
                                     p('remind', '(translate %s => %s)%s:\n%s\n%s' % (source.lang, lang, key, old_text, new_text))
                                     replace = input('是否修改该字符串:(y)') in 'yY'
                             if replace:
-                                item[lang] = new_text
-                                p('info', 'translate %s => %s >> %s => %s' % (source.lang, lang, source.text, item[lang]))
-                                if not old_text:  # 给file添加空行, see: @add_empty_line_for_cover
-                                    file.add(key, '')
-                    except Exception as e:
-                        p('warn', 'translate %s => %s >> %s =x %s' % (source.lang, lang, source.text, e))
+                                temp_result[lang] = (new_text, old_text, file)
+                    # 翻译结果放在temp_result中去, item的所有语言的翻译完全成功后再应用更改
+                    # 若中途报错, 则item的所有语言翻译都会回退
+                    # 这样做主要是为了防止source被翻译过后第二次翻译时结果不一样的问题
+                    for lang, (new_text, old_text, file) in temp_result.items():
+                        item[lang] = new_text
+                        p('info', 'translate %s => %s >> %s => %s' % (source.lang, lang, source.text, item[lang]))
+                        if not old_text:  # 给file添加空行, see: @add_empty_line_for_cover
+                            file.add(key, '')
+                except Exception as e:
+                    p('warn', 'translate %s => ?? >> %s =x %s' % (source.lang, source.text, e))
 
     items = ItemsUtil.read_files_to_items(files)
 
