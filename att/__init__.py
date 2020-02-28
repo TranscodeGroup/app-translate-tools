@@ -180,7 +180,8 @@ def translate_files(files: typing.Tuple[File, ...], translate_all_lang=True):
                                 temp_result[lang] = (new_text, old_text, file)
                     # 翻译结果放在temp_result中去, item的所有语言的翻译完全成功后再应用更改
                     # 若中途报错, 则item的所有语言翻译都会回退
-                    # 这样做主要是为了防止source被翻译过后第二次翻译时结果不一样的问题
+                    # 这样做主要是为了防止source是zh写在en的file中时, 第一次是zh翻其他语言,
+                    # 第二次若source已经被翻成了en, 则是en翻其他语言, 会存在结果不一致的问题
                     for lang, (new_text, old_text, file) in temp_result.items():
                         item[lang] = new_text
                         p('info', 'translate %s => %s >> %s => %s' % (source.lang, lang, source.text, item[lang]))
