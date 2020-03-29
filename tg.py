@@ -71,13 +71,14 @@ def open_ios_files():
 def translate_all():
     # translate_files(open_android_files_bus())
     # translate_files(open_android_files_thirdparty(), False)
-    translate_files(open_android_files(), True)
+    # translate_files(open_android_files(), True)
     # translate_files(open_web_files(), False)
     # translate_files(open_ios_files())
     # translate_files(open_android_files_flavor('tg'), False)
     # translate_files(open_android_files_flavor('distar'), False)
     # translate_files(open_android_files_flavor('geckram'), False)
     # translate_files(open_android_files_flavor('blaupunkt'), False)
+    translate_files(open_android_files_flavor('ists'), False)
 
 def export_import_all():
     export_xls(r'tmp/20191122_tg_tracker.main.xls', open_android_files(), open_ios_files())
