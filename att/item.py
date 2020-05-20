@@ -1,22 +1,52 @@
 
 from .utils import *
 
-class Item(Dict):
-    def __init__(self, *, key=None, ios_key=None, web_key=None, untranslatable=False, auto_translate=True, en='', zh='', th='', vi='', pt=''):
+
+class Item(dict):
+    """
+    - key/ios_key/auto_translate等字段放到自身的属性上
+    - lang->text的映射放到dict中, 使用keys()可列出所有lang
+    """
+
+    def __init__(self, *, key=None, ios_key=None, web_key=None, untranslatable=False, auto_translate=True):
         super().__init__()
         self.key = key
         self.ios_key = ios_key
         self.web_key = web_key
         self.untranslatable = untranslatable  # 当前对该字段的处理在合并Item时, 貌似有问题...
         self.auto_translate = auto_translate  # 脚本的翻译功能会判断该字段
-        self.en = en
-        self.zh = zh
-        self.th = th
-        self.vi = vi
-        self.pt = pt
+
+    def __missing__(self, key):
+        return None
 
     def all_lang_equals(self, other):
-        return self.en == other.en and self.zh == other.zh and self.th == other.th and self.vi == other.vi and self.pt == other.pt
+        """
+        所有语言的翻译完全相等
+        """
+        if self.keys() != other.keys():
+            return False
+        for key in self.keys():
+            if self[key] != other[key]:
+                return False
+        return True
+
+    def all_lang_equals_for_present(self, other):
+        """
+        翻译了的部分语言的翻译都是相等的, 未翻译的不算
+        """
+        for lang, text in self.items():
+            if other[lang] and other[lang] != text:
+                return False
+        return True
+
+    def all_lang_equals_for_only_en_zh(self, other):
+        """
+        只比较en和zh
+        """
+        for lang in ('en', 'zh'):
+            if self[lang] != other[lang]:
+                return False
+        return True
 
 
 class Key:
@@ -33,16 +63,17 @@ class Key:
     def __init__(self, name):
         self.name = name
 
-    def __str__(self):
-        return self.name
-
     def __eq__(self, o: object) -> bool:
         return type(self) == type(o) and self.name == o.name
 
     def __hash__(self) -> int:
         return hash(self.name)
 
-    __repr__ = __str__
+    def __str__(self):
+        return self.name
+
+    def __repr__(self):  # 控制台打印专用
+        return self.key_name() + ':' + self.name
 
     # 所谓'key_name'是指Item的三种key: key, ios_key, web_key
     @classmethod
@@ -68,4 +99,3 @@ class WebKey(Key):
 
     def __init__(self, name):
         super().__init__(name)
-

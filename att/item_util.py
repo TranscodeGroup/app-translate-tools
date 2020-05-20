@@ -4,15 +4,20 @@ from .item import *
 from .files import *
 import typing
 
+SORTED_BY_TEXT = False
+CLEAR_UNTRANSLATE_LANG = False
+
+COL_INDEX = 'index'
 COL_KEY = 'KEY'
 COL_IOS_KEY = 'IOS_KEY'
 COL_WEB_KEY = 'WEB_KEY'
 COL_UNTRANSLATABLE = 'Untranslatable'
-COL_ENGLISH = 'English'
-COL_CHINESE = 'Chinese'
-COL_THAI = 'Thai'
-COL_VIET = 'Vietnamese'
-COL_PORT = 'Portuguese'
+COLUMNS_DEFAULT = (COL_KEY, COL_IOS_KEY, COL_WEB_KEY, COL_UNTRANSLATABLE)
+
+lang_column_converter = KeyValueConverter(
+    zh='Chinese',
+    en='English',
+)
 
 
 class FieldConverter:
@@ -67,20 +72,19 @@ class ItemsUtil:
         items = Dict()
         df = pd.read_excel(file)
         fc = FieldConverter.create(file)
-        # df.fillna('', inplace=True) 将所有的NaN替换成''
+        # df.fillna('', inplace=True) # 将所有的NaN替换成''
+        lang_columns = tuple(filter(lambda n: n not in COLUMNS_DEFAULT and n != COL_INDEX, df.columns))
         for i in range(len(df)):
             item = Item(
                 key=fc.from_text(df[COL_KEY][i]),
                 ios_key=fc.from_text(df[COL_IOS_KEY][i]) if df.get(COL_IOS_KEY) is not None else None,
                 web_key=fc.from_text(df[COL_WEB_KEY][i]) if df.get(COL_WEB_KEY) is not None else None,
                 untranslatable=fc.from_bool(df[COL_UNTRANSLATABLE][i]) if df.get(COL_UNTRANSLATABLE) is not None else False,
-                # @item_lang_is_none
-                en=fc.from_text(df[COL_ENGLISH][i]) if df.get(COL_ENGLISH) is not None else None,
-                zh=fc.from_text(df[COL_CHINESE][i]) if df.get(COL_CHINESE) is not None else None,
-                th=fc.from_text(df[COL_THAI][i]) if df.get(COL_THAI) is not None else None,
-                vi=fc.from_text(df[COL_VIET][i]) if df.get(COL_VIET) is not None else None,
-                pt=fc.from_text(df[COL_PORT][i]) if df.get(COL_PORT) is not None else None,
             )
+            for column in lang_columns:
+                lang = lang_column_converter.get_key(column, column)
+                # @item_lang_is_none
+                item[lang] = fc.from_text(df[column][i])
             if item.key:
                 items[AndroidKey(item.key)] = item
             if item.ios_key:
@@ -92,32 +96,55 @@ class ItemsUtil:
 
     @classmethod
     def write_items_to_xls(cls, file, items):
-        all_columns = (COL_KEY, COL_IOS_KEY, COL_WEB_KEY, COL_UNTRANSLATABLE, COL_ENGLISH, COL_CHINESE, COL_THAI, COL_VIET, COL_PORT)
-        out_columns = (COL_KEY, COL_IOS_KEY, COL_WEB_KEY, COL_ENGLISH, COL_CHINESE, COL_THAI, COL_VIET, COL_PORT)
-
-        df = pd.DataFrame(columns=all_columns)
+        df = pd.DataFrame(columns=COLUMNS_DEFAULT)
         fc = FieldConverter.create(file)
-        sorted_items = sorted(items.values(), key=lambda i: i.en.lower())  # 按en排序
-        for item in sorted_items:
+        item_list = []
+        if SORTED_BY_TEXT:
+            item_list = sorted(items.values(), key=lambda i: i['en'].lower())  # 按en排序
+        else:
+            item_list = items.values()
+        for item in item_list:
             if not item.untranslatable:  # 只输出需要翻译的内容 @write_items_to_xls_only_translatable
-                df.loc[len(df)] = (
+                # 新列的index
+                index = len(df)
+                row = [
                     fc.to_text(item.key),
                     fc.to_text(item.ios_key),
                     fc.to_text(item.web_key),
                     fc.to_bool(item.untranslatable),
-                    fc.to_text(item.en),
-                    fc.to_text(item.zh),
-                    fc.to_text(item.th),
-                    fc.to_text(item.vi),
-                    fc.to_text(item.pt),
-                )
-        df.to_excel(file, index=False, columns=out_columns, na_rep='')
+                ]
+                # @item_lang_is_none
+                # row的长度比df.columns小时, 添加会失败, 故补''
+                for i in range(len(df.columns) - len(row)):
+                    row.append('')
+                df.loc[index] = row
+                for lang, text in item.items():
+                    column = lang_column_converter.get_value(lang, lang)
+                    # 若语言对应的列不存在, 则添加一列, 默认值设为''
+                    if df.get(column) is None:
+                        df[column] = ''
+                    df[column][index] = fc.to_text(text)
+
+        out_columns = list(df.columns)
+        out_columns.remove(COL_UNTRANSLATABLE)
+        df.to_excel(file, index=True, index_label=COL_INDEX, columns=out_columns, na_rep='')
 
     @classmethod
     def read_files_to_items(cls, files):
         items = Dict()
         for f in files:
             f.to_items(items)
+
+        if CLEAR_UNTRANSLATE_LANG:
+            # 若翻译和en相同, 则认为这是未翻译的, 需要置为''
+            for key, item in items.items():
+                langs = list(item.keys())
+                langs.remove('en')
+                default_text = item['en']
+                for lang in langs:
+                    if item[lang] == default_text:
+                        p('info', f'- untranslate [{lang}] {key}: {item[lang]}')
+                        item[lang] = ''
         return items
 
     @classmethod
@@ -127,9 +154,13 @@ class ItemsUtil:
             f.save()
 
     @classmethod
+    def get_key_class_from_files(cls, files: typing.Tuple[File]):
+        # 认为files的keyClass都是相同的, 从第一个file中获取keyClass
+        return files[0].keyClass if len(files) > 0 else AndroidKey
+
+    @classmethod
     def get_key_name_from_files(cls, files: typing.Tuple[File]):
-        # 认为files的key_name都是相同的, 从第一个file中获取key_name
-        return (files[0].keyClass if len(files) > 0 else AndroidKey).key_name()
+        return cls.get_key_class_from_files(files).key_name()
 
     @classmethod
     def get_key_name_from_items(cls, items: typing.Dict[Key, Item]):

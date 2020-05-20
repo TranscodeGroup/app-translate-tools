@@ -28,9 +28,9 @@ def export_xls(out_xls, *files_tuple):
         key_name = ItemsUtil.get_key_name_from_items(new_items)  # 可能为: key/ios_key/web_key
         for key, item in new_items.items():
             for base_item in base_items.values():
-                if not base_item[key_name] and item.all_lang_equals(base_item):
+                if not getattr(base_item, key_name) and item.all_lang_equals(base_item):
                     # base_item不存在[key_name]的情况下, 若所有语言的翻译都相同, 说明是同一个字符串, 给base_item添加[key_name]
-                    base_item[key_name] = item[key_name]
+                    setattr(base_item, key_name, getattr(item, key_name))
                     break
             else:  # 没有找到三语相同的时, 需要添加item
                 items[key] = item
@@ -85,18 +85,15 @@ def import_xls(in_xls, *files_tuple):
                     else:
                         pass
 
-    def process_diff_all(files: typing.Tuple[File, ...], new_items: typing.Dict[str, Item], item_key_name: str):
+    def process_diff_all(files: typing.Tuple[File, ...], new_items: typing.Dict[str, Item]):
         """
         以new_items为准, 处理删除和新增
 
         :param files:
         :param new_items:
-        :param item_key_name:  new_items的key使用的Item的哪个字段; 可选 'key', 'ios_key';
         :return:
         """
         items = ItemsUtil.read_files_to_items(files)
-        if item_key_name:  # 过滤android或ios的item
-            new_items = Dict((k, v) for k, v in new_items.items() if str(k) == v[item_key_name])
         lang_files = list(map(lambda f: (f.lang, f), files))  # (注意: 有可能存在多个file的lang相同的情况...)
         for key, item in items.items():  # 遍历items
             new_item = new_items[key]
@@ -151,7 +148,8 @@ def import_xls(in_xls, *files_tuple):
     # ItemsUtil.cover_items_to_files(ios_files, new_items)
 
     for files in files_tuple:
-        process_diff_all(files, new_items, ItemsUtil.get_key_name_from_files(files))
+        key_class = ItemsUtil.get_key_class_from_files(files)
+        process_diff_all(files, Dict({k: v for k, v in new_items.items() if isinstance(k, key_class)}))
         ItemsUtil.cover_items_to_files(files, new_items)
 
 
@@ -166,8 +164,9 @@ def translate_files(files: typing.Tuple[File, ...], translate_all_lang=True):
             has_translate_files = [(lang, f) for lang, f in main_lang_files if item[lang]]
             if len(has_translate_files) > 0 and len(has_translate_files) < len(main_lang_files):
                 source = Dict(lang=has_translate_files[0][0], text=item[has_translate_files[0][0]])  # 将第一个有翻译的语言作为源语言
-                for lang, file in main_lang_files:
-                    try:
+                try:
+                    temp_result = Dict()
+                    for lang, file in main_lang_files:
                         old_text = item[lang]
                         # 因为存在将zh写在en的file里的情况, 故大多数情况下需要把所有的file都翻译一遍
                         if translate_all_lang or not old_text:
@@ -178,12 +177,18 @@ def translate_files(files: typing.Tuple[File, ...], translate_all_lang=True):
                                     p('remind', '(translate %s => %s)%s:\n%s\n%s' % (source.lang, lang, key, old_text, new_text))
                                     replace = input('是否修改该字符串:(y)') in 'yY'
                             if replace:
-                                item[lang] = new_text
-                                p('info', 'translate %s => %s >> %s => %s' % (source.lang, lang, source.text, item[lang]))
-                                if not old_text:  # 给file添加空行, see: @add_empty_line_for_cover
-                                    file.add(key, '')
-                    except Exception as e:
-                        p('warn', 'translate %s => %s >> %s =x %s' % (source.lang, lang, source.text, e))
+                                temp_result[lang] = (new_text, old_text, file)
+                    # 翻译结果放在temp_result中去, item的所有语言的翻译完全成功后再应用更改
+                    # 若中途报错, 则item的所有语言翻译都会回退
+                    # 这样做主要是为了防止source是zh写在en的file中时, 第一次是zh翻其他语言,
+                    # 第二次若source已经被翻成了en, 则是en翻其他语言, 会存在结果不一致的问题
+                    for lang, (new_text, old_text, file) in temp_result.items():
+                        item[lang] = new_text
+                        p('info', 'translate %s => %s >> %s => %s' % (source.lang, lang, source.text, item[lang]))
+                        if not old_text:  # 给file添加空行, see: @add_empty_line_for_cover
+                            file.add(key, '')
+                except Exception as e:
+                    p('warn', 'translate %s => ?? >> %s =x %s' % (source.lang, source.text, e))
 
     items = ItemsUtil.read_files_to_items(files)
 

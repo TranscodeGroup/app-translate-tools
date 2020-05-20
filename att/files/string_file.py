@@ -4,6 +4,7 @@ from ..item import *
 import os
 from .file import *
 
+
 class Line:
     @staticmethod
     def create(text):
@@ -34,13 +35,22 @@ class KeyValueLine(Line):
         self.key = key
         self.value = value
 
+    def get_normalized_value(self):
+        return convert_string_to_text(self.value)
+
+    def set_normalized_value(self, value):
+        # iOS不需要替换单引号
+        self.value = convert_text_to_string(value, replace_single_quote=False)
+
     def text(self):
         return KeyValueLine.TEXT_FORMAT.format(key=self.key, value=self.value)
+
 
 class StringsFile(File):
     @staticmethod
     def read(file):
         if not os.path.exists(file):
+            p('warn', '%(file)s no exists.' % {'file': file})
             return []
         lines = []
         with open(file, mode='r', encoding='utf-8') as f:
@@ -68,13 +78,13 @@ class StringsFile(File):
             key = self.keyClass(line.key)
             item = items[key]
             if item:
-                old_text = line.value
+                old_text = line.get_normalized_value()
                 new_text = item[self.lang]
                 if new_text is None:
                     # @item_lang_is_none
                     p('skip', '   [%(lang)s] %(key)s: new_text is None' % {'key': key, 'lang': self.lang})
                 elif old_text != new_text:
-                    line.value = new_text
+                    line.set_normalized_value(new_text)
 
     def to_items(self, items):
         for line in filter(lambda l: isinstance(l, KeyValueLine), self._lines):
@@ -87,14 +97,14 @@ class StringsFile(File):
                 p('warn', '存在同名key: %(key)s [%(old_value)s=>%(new_value)s] (%(lang)s)' % {
                     'key': key,
                     'old_value': item[self.lang],
-                    'new_value': line.value,
+                    'new_value': line.get_normalized_value(),
                     'lang': self.lang
                 })
-            item[self.lang] = line.value
+            item[self.lang] = line.get_normalized_value()
 
     def to_file(self, file):
         if not os.path.exists(file):
             os.makedirs(os.path.dirname(file), exist_ok=True)
-        with open(file, mode='w', encoding='utf-8', newline='\n') as f:
+        with open(file, mode='w', encoding='utf-8', newline=None) as f:
             for line in self._lines:
                 f.writelines(line.text())

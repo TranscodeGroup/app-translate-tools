@@ -5,7 +5,6 @@ import re
 from ..item import *
 from .file import *
 
-REMIND_WHEN_ESCAPE = True
 REG_QUOTE_TEXT = re.compile(r'^"(?P<content>.*?)\s*"$')
 REG_REF_STRING_TEXT = re.compile(r'@string/\w+')
 
@@ -14,6 +13,7 @@ class XmlFile(File):
     @staticmethod
     def read(file):
         if not os.path.exists(file):
+            p('warn', '%(file)s no exists.' % {'file': file})
             return dom.parseString('<resources>\n</resources>')
         root = dom.parse(file)
         resources_node = root.getElementsByTagName('resources')[0]
@@ -69,7 +69,7 @@ class XmlFile(File):
             if text_node:
                 item = items[key]
                 if item:
-                    old_text = text_node.data
+                    old_text = NodeUtil.get_text_in_text_node(text_node)
                     new_text = item[self.lang]
                     # 双引号括住的字符串, 需要特殊处理
                     match = REG_QUOTE_TEXT.fullmatch(old_text)
@@ -81,22 +81,8 @@ class XmlFile(File):
                     elif old_text == new_text:  # 文本相同, 不保存
                         pass
                     else:
-                        # `'`和`\`需要转义
-                        if "'" in old_text or '\\' in old_text \
-                                or "'" in new_text or '\\' in new_text:
-                            # 先替换`\`=>`\\`, 再替换`'`=>`\'`
-                            new_text = new_text.replace('\\', '\\\\').replace("'", "\\'")
-                            if new_text != old_text:
-                                if REMIND_WHEN_ESCAPE:
-                                    p('remind', '%s:\n%s\n%s' % (key, old_text, new_text))
-                                    if input('是否修改该字符串:(y)') not in 'yY':  # ''/'y'/'Y'表示'是'
-                                        continue  # 不保存
-                                else:
-                                    p('warn', key, old_text, '=>', new_text)
-                            else:
-                                continue  # 文本相同, 跳过保存
                         # 保存
-                        text_node.data = new_text
+                        NodeUtil.set_text_in_text_node(text_node, new_text)
 
     def to_items(self, items):
         string_nodes = self._dom.getElementsByTagName('string')
@@ -110,7 +96,7 @@ class XmlFile(File):
                                 untranslatable=node.getAttribute('translatable') == 'false',
                                 auto_translate=not (node.getAttribute('translateAuto') == 'false'))
                     items[key] = item
-                item[self.lang] = text_node.data
+                item[self.lang] = NodeUtil.get_text_in_text_node(text_node)
 
     def to_file(self, file):
         str_io = io.StringIO()
@@ -121,7 +107,7 @@ class XmlFile(File):
         content = str_io.getvalue().replace('&quot;', '"').replace('&gt;', '>')
         if not os.path.exists(file):  # 保证目录存在, 方便之后创建文件
             os.makedirs(os.path.dirname(file), exist_ok=True)
-        with open(file, mode='w', encoding='utf-8', newline='\n') as w:
+        with open(file, mode='w', encoding='utf-8', newline=None) as w:
             w.write(content)
 
 
@@ -138,6 +124,15 @@ class NodeUtil:
                     'length': len(node.childNodes),
                 })
             return None
+
+    @staticmethod
+    def get_text_in_text_node(node) -> str:
+        return convert_string_to_text(node.data)
+
+    @staticmethod
+    def set_text_in_text_node(node, text):
+        # xml中双引号不需要转义
+        node.data = convert_text_to_string(text, replace_double_quote=False)
 
     @staticmethod
     def to_text(node: dom.Node) -> str:

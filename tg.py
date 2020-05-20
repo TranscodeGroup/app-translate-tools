@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 from att import *
 
 
@@ -8,29 +10,29 @@ def test_all():
 
 def open_android_files_bus():
     return (
-        XmlFile(r'..\Tracker-Android\bus\src\main\res\values\strings.xml', 'en'),
-        XmlFile(r'..\Tracker-Android\bus\src\main\res\values-zh-rCN\strings.xml', 'zh'),
+        XmlFile(r'..\@tg\Tracker-Android\bus\src\main\res\values\strings.xml', 'en'),
+        XmlFile(r'..\@tg\Tracker-Android\bus\src\main\res\values-zh-rCN\strings.xml', 'zh'),
     )
 
 
 def open_android_files_thirdparty():
     return (
-        XmlFile(r'..\Tracker-Android\thirdparty\src\main\res\values\strings_code.xml', 'en'),
-        XmlFile(r'..\Tracker-Android\thirdparty\src\main\res\values-zh-rCN\strings_code.xml', 'zh'),
-        XmlFile(r'..\Tracker-Android\thirdparty\src\main\res\values-th-rTH\strings_code.xml', 'th'),
-        XmlFile(r'..\Tracker-Android\thirdparty\src\main\res\values-vi\strings_code.xml', 'vi'),
-        XmlFile(r'..\Tracker-Android\thirdparty\src\main\res\values-pt\strings_code.xml', 'pt'),
+        XmlFile(r'..\@tg\Tracker-Android\thirdparty\src\main\res\values\strings_code.xml', 'en'),
+        XmlFile(r'..\@tg\Tracker-Android\thirdparty\src\main\res\values-zh-rCN\strings_code.xml', 'zh'),
+        XmlFile(r'..\@tg\Tracker-Android\thirdparty\src\main\res\values-th-rTH\strings_code.xml', 'th'),
+        XmlFile(r'..\@tg\Tracker-Android\thirdparty\src\main\res\values-vi\strings_code.xml', 'vi'),
+        XmlFile(r'..\@tg\Tracker-Android\thirdparty\src\main\res\values-pt\strings_code.xml', 'pt'),
     )
 
 
 def open_android_files():
     return (
         # main
-        XmlFile(r'..\Tracker-Android\app\src\main\res\values\strings.xml', 'en'),
-        XmlFile(r'..\Tracker-Android\app\src\main\res\values-zh-rCN\strings.xml', 'zh'),
-        XmlFile(r'..\Tracker-Android\app\src\main\res\values-th-rTH\strings.xml', 'th'),
-        XmlFile(r'..\Tracker-Android\app\src\main\res\values-vi\strings.xml', 'vi'),
-        XmlFile(r'..\Tracker-Android\app\src\main\res\values-pt\strings.xml', 'pt'),
+        XmlFile(r'..\@tg\Tracker-Android\app\src\main\res\values\strings.xml', 'en'),
+        XmlFile(r'..\@tg\Tracker-Android\app\src\main\res\values-zh-rCN\strings.xml', 'zh'),
+        XmlFile(r'..\@tg\Tracker-Android\app\src\main\res\values-th-rTH\strings.xml', 'th'),
+        XmlFile(r'..\@tg\Tracker-Android\app\src\main\res\values-vi\strings.xml', 'vi'),
+        XmlFile(r'..\@tg\Tracker-Android\app\src\main\res\values-pt\strings.xml', 'pt'),
     )
 
 
@@ -39,45 +41,46 @@ def open_android_files_flavor(flavor: str):
         # tg的文件在main目录下
         flavor = 'main'
     return (
-        XmlFile('../Tracker-Android/app/src/%(flavor)s/res/values\strings-flavor.xml' % {'flavor': flavor}, 'en', is_main=True),
-        XmlFile('../Tracker-Android/app/src/%(flavor)s/res/values-zh-rCN\strings-flavor.xml' % {'flavor': flavor}, 'zh', is_main=True),
-        XmlFile('../Tracker-Android/app/src/%(flavor)s/res/values-th-rTH\strings-flavor.xml' % {'flavor': flavor}, 'th', is_main=True),
-        XmlFile('../Tracker-Android/app/src/%(flavor)s/res/values-vi\strings-flavor.xml' % {'flavor': flavor}, 'vi', is_main=True),
-        XmlFile('../Tracker-Android/app/src/%(flavor)s/res/values-pt\strings-flavor.xml' % {'flavor': flavor}, 'pt', is_main=True),
+        XmlFile('../@tg/Tracker-Android/app/src/%(flavor)s/res/values\strings-flavor.xml' % {'flavor': flavor}, 'en', is_main=True),
+        XmlFile('../@tg/Tracker-Android/app/src/%(flavor)s/res/values-zh-rCN\strings-flavor.xml' % {'flavor': flavor}, 'zh', is_main=True),
+        XmlFile('../@tg/Tracker-Android/app/src/%(flavor)s/res/values-th-rTH\strings-flavor.xml' % {'flavor': flavor}, 'th', is_main=True),
+        XmlFile('../@tg/Tracker-Android/app/src/%(flavor)s/res/values-vi\strings-flavor.xml' % {'flavor': flavor}, 'vi', is_main=True),
+        XmlFile('../@tg/Tracker-Android/app/src/%(flavor)s/res/values-pt\strings-flavor.xml' % {'flavor': flavor}, 'pt', is_main=True),
     )
 
 
 def open_web_files():
     return (
-        JsonFile(r'..\Tracker-Vue\src\locales\en.json', 'en'),
-        JsonFile(r'..\Tracker-Vue\src\locales\zh.json', 'zh'),
-        JsonFile(r'..\Tracker-Vue\src\locales\th.json', 'th'),
-        JsonFile(r'..\Tracker-Vue\src\locales\vi.json', 'vi'),
-        JsonFile(r'..\Tracker-Vue\src\locales\pt.json', 'pt'),
+        JsonFile(r'..\@tg\Tracker-Vue\src\locales\en.json', 'en'),
+        JsonFile(r'..\@tg\Tracker-Vue\src\locales\zh.json', 'zh'),
+        JsonFile(r'..\@tg\Tracker-Vue\src\locales\th.json', 'th'),
+        JsonFile(r'..\@tg\Tracker-Vue\src\locales\vi.json', 'vi'),
+        JsonFile(r'..\@tg\Tracker-Vue\src\locales\pt.json', 'pt'),
     )
 
 
 def open_ios_files():
     return (
-        StringsFile(r'..\Tracker-iOS\SNProject\SNProject\Base.lproj\Localizable.strings', 'en'),
-        StringsFile(r'..\Tracker-iOS\SNProject\SNProject\zh.lproj\Localizable.strings', 'zh'),
-        StringsFile(r'..\Tracker-iOS\SNProject\SNProject\th.lproj\Localizable.strings', 'th'),
-        StringsFile(r'..\Tracker-iOS\SNProject\SNProject\vi.lproj\Localizable.strings', 'vi'),
-        StringsFile(r'..\Tracker-iOS\SNProject\SNProject\pt.lproj\Localizable.strings', 'pt'),
+        StringsFile(r'..\@tg\Tracker-iOS\SNProject\SNProject\Base.lproj\Localizable.strings', 'en'),
+        StringsFile(r'..\@tg\Tracker-iOS\SNProject\SNProject\zh.lproj\Localizable.strings', 'zh'),
+        StringsFile(r'..\@tg\Tracker-iOS\SNProject\SNProject\th.lproj\Localizable.strings', 'th'),
+        StringsFile(r'..\@tg\Tracker-iOS\SNProject\SNProject\vi.lproj\Localizable.strings', 'vi'),
+        StringsFile(r'..\@tg\Tracker-iOS\SNProject\SNProject\pt.lproj\Localizable.strings', 'pt'),
     )
 
-
-def main():
+def translate_all():
     # translate_files(open_android_files_bus())
     # translate_files(open_android_files_thirdparty(), False)
-    # translate_files(open_android_files(), False)
+    # translate_files(open_android_files(), True)
     # translate_files(open_web_files(), False)
     # translate_files(open_ios_files())
     # translate_files(open_android_files_flavor('tg'), False)
     # translate_files(open_android_files_flavor('distar'), False)
     # translate_files(open_android_files_flavor('geckram'), False)
     # translate_files(open_android_files_flavor('blaupunkt'), False)
+    translate_files(open_android_files_flavor('ists'), False)
 
+def export_import_all():
     export_xls(r'tmp/20191122_tg_tracker.main.xls', open_android_files(), open_ios_files())
     export_xls(r'tmp/20191122_tg_tracker.tg.xls', open_android_files_flavor('tg'))
     export_xls(r'tmp/20191122_tg_tracker.distar.xls', open_android_files_flavor('distar'))
@@ -93,6 +96,10 @@ def main():
     import_xls(r'tmp/20191122_tg_tracker.blaupunkt.xls', open_android_files_flavor('blaupunkt'))
     import_xls(r'tmp/20191122_tg_tracker_vue.xls', open_web_files())
     import_xls(r'tmp/20191122_tg_thirdparty.xls', open_android_files_thirdparty())
+
+def main():
+    translate_all()
+    # export_import_all()
 
     # import_xls(r'tmp/-App tracker_v5.main.xls', open_android_files(), open_ios_files())
     # import_xls(r'tmp/-App tracker_v5.thirdparty.xls', open_android_files_thirdparty())
