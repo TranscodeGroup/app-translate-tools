@@ -45,6 +45,8 @@ def main():
     # import_xls('./tmp/printer-2019-12-30.xls', open_ios_files(), open_android_files(),)
     # export_xls('./tmp/printer-test.xls', open_ios_files(), open_android_files(),)
     # import_xls('./tmp/printer-test.xls', open_ios_files(), open_android_files(),)
+    export_xls('./tmp/selpic-v2.1.1-2020-05-29.xls', open_android_files())
+    import_xls('./tmp/selpic-v2.1.1-2020-05-29.xls', open_android_files())
 
 
 if __name__ == "__main__":
