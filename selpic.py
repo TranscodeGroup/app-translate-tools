@@ -34,7 +34,7 @@ def open_ios_files():
 
 
 def main():
-    translate_files(open_android_files(), translate_all_lang=True)
+    # translate_files(open_android_files(), translate_all_lang=True)
     # translate_files(open_ios_files(), translate_all_lang=True)
     # translate_files(open_android_files(), translate_all_lang=False)
     # translate_files(open_ios_files(), translate_all_lang=False)
@@ -45,8 +45,11 @@ def main():
     # import_xls('./tmp/printer-2019-12-30.xls', open_ios_files(), open_android_files(),)
     # export_xls('./tmp/printer-test.xls', open_ios_files(), open_android_files(),)
     # import_xls('./tmp/printer-test.xls', open_ios_files(), open_android_files(),)
-    export_xls('./tmp/selpic-v2.1.1-2020-05-29.xls', open_android_files())
-    import_xls('./tmp/selpic-v2.1.1-2020-05-29.xls', open_android_files())
+
+    # export_xls('./tmp/selpic-v2.1.1-2020-06-02.xls', open_android_files())
+    # import_xls('./tmp/selpic-v2.1.1-2020-06-02.xls', open_android_files())
+    # import_xls('./tmp/selpic-v2.1.1-2020-06-02-ios.xls', open_ios_files())
+    pass
 
 
 if __name__ == "__main__":
