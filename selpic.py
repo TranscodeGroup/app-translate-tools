@@ -34,7 +34,7 @@ def open_ios_files():
 
 
 def main():
-    # translate_files(open_android_files(), translate_all_lang=True)
+    translate_files(open_android_files(), translate_all_lang=True)
     # translate_files(open_ios_files(), translate_all_lang=True)
     # translate_files(open_android_files(), translate_all_lang=False)
     # translate_files(open_ios_files(), translate_all_lang=False)
@@ -49,8 +49,9 @@ def main():
     # export_xls('./tmp/selpic-v2.1.1-2020-06-02.xls', open_android_files())
     # import_xls('./tmp/selpic-v2.1.1-2020-06-02.xls', open_android_files())
     # import_xls('./tmp/selpic-v2.1.1-2020-06-02-ios.xls', open_ios_files())
-    export_xls('./tmp/selpic-2020-06-24.xls', open_ios_files(), open_android_files())
-    import_xls('./tmp/selpic-2020-06-24.xls', open_ios_files(), open_android_files())
+    # export_xls('./tmp/selpic-2020-06-24.xls', open_ios_files(), open_android_files())
+    # import_xls('./tmp/selpic-2020-06-24.xls', open_ios_files(), open_android_files())
+    # import_xls('./tmp/selpic-2020-06-24-fixed.xls', open_ios_files(), open_android_files())
     pass
 
 
