@@ -1,4 +1,5 @@
 import re
+import os
 if __name__ == "__main__":
     import gtranslate as gt
 else:
@@ -56,7 +57,9 @@ def translate(text, from_lang='auto', to_lang='auto'):
             verify=True,  # 设为False可以关闭证书校验, 方便调试
             timeout=5,  # 5秒超时
             headers={
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.81 Safari/537.36'
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36',
+                # 从 https://translate.google.com/m 复制cookie, 保存到环境变量中
+                'cookie': os.environ.get('app_translate_tools_cookie', None)
             }
         ))
     # 当前使用`\n`来分隔行
