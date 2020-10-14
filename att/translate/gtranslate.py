@@ -184,6 +184,8 @@ def findall_content(xml_string, tag):
 # This subroutine calls Google translate and extracts the translation from
 # the html request
 def translate(to_translate, to_language="auto", language="auto", **kwargs):
+    # 添加延时, 希望能够避免被Google当成机器人_(:3」∠)_
+    # time.sleep(0.1)
     # send request
     r = requests.get(
         "https://translate.google.com/m?hl=%s&sl=%s&q=%s" % (to_language, language, to_translate.replace(" ", "+")),
@@ -229,6 +231,7 @@ import requests
 import os
 import xml.etree.ElementTree as ET
 import sys
+import time
 from io import BytesIO
 import re
 
