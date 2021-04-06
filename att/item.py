@@ -8,11 +8,12 @@ class Item(dict):
     - lang->text的映射放到dict中, 使用keys()可列出所有lang
     """
 
-    def __init__(self, *, key=None, ios_key=None, web_key=None, untranslatable=False, auto_translate=True):
+    def __init__(self, *, key=None, ios_key=None, web_key=None, flutter_key=None, untranslatable=False, auto_translate=True):
         super().__init__()
         self.key = key
         self.ios_key = ios_key
         self.web_key = web_key
+        self.flutter_key = flutter_key
         self.untranslatable = untranslatable  # 当前对该字段的处理在合并Item时, 貌似有问题...
         self.auto_translate = auto_translate  # 脚本的翻译功能会判断该字段
 
@@ -75,7 +76,7 @@ class Key:
     def __repr__(self):  # 控制台打印专用
         return self.key_name() + ':' + self.name
 
-    # 所谓'key_name'是指Item的三种key: key, ios_key, web_key
+    # 所谓'key_name'是指Item的四种key: key, ios_key, web_key, flutter_key
     @classmethod
     def key_name(cls): return 'key'
 
@@ -96,6 +97,14 @@ class iOSKey(Key):
 class WebKey(Key):
     @classmethod
     def key_name(cls): return 'web_key'
+
+    def __init__(self, name):
+        super().__init__(name)
+
+
+class FlutterKey(Key):
+    @classmethod
+    def key_name(cls): return 'flutter_key'
 
     def __init__(self, name):
         super().__init__(name)

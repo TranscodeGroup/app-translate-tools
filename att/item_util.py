@@ -11,8 +11,9 @@ COL_INDEX = 'index'
 COL_KEY = 'KEY'
 COL_IOS_KEY = 'IOS_KEY'
 COL_WEB_KEY = 'WEB_KEY'
+COL_FLUTTER_KEY = 'FLUTTER_KEY'
 COL_UNTRANSLATABLE = 'Untranslatable'
-COLUMNS_DEFAULT = (COL_KEY, COL_IOS_KEY, COL_WEB_KEY, COL_UNTRANSLATABLE)
+COLUMNS_DEFAULT = (COL_KEY, COL_IOS_KEY, COL_WEB_KEY, COL_FLUTTER_KEY, COL_UNTRANSLATABLE)
 
 lang_column_converter = KeyValueConverter(
     zh='Chinese',
@@ -79,6 +80,7 @@ class ItemsUtil:
                 key=fc.from_text(df[COL_KEY][i]),
                 ios_key=fc.from_text(df[COL_IOS_KEY][i]) if df.get(COL_IOS_KEY) is not None else None,
                 web_key=fc.from_text(df[COL_WEB_KEY][i]) if df.get(COL_WEB_KEY) is not None else None,
+                flutter_key=fc.from_text(df[COL_FLUTTER_KEY][i]) if df.get(COL_FLUTTER_KEY) is not None else None,
                 untranslatable=fc.from_bool(df[COL_UNTRANSLATABLE][i]) if df.get(COL_UNTRANSLATABLE) is not None else False,
             )
             for column in lang_columns:
@@ -91,6 +93,8 @@ class ItemsUtil:
                 items[iOSKey(item.ios_key)] = item
             if item.web_key:
                 items[WebKey(item.web_key)] = item
+            if item.flutter_key:
+                items[FlutterKey(item.flutter_key)] = item
 
         return items
 
@@ -111,6 +115,7 @@ class ItemsUtil:
                     fc.to_text(item.key),
                     fc.to_text(item.ios_key),
                     fc.to_text(item.web_key),
+                    fc.to_text(item.flutter_key),
                     fc.to_bool(item.untranslatable),
                 ]
                 # @item_lang_is_none

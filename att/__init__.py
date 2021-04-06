@@ -19,13 +19,13 @@ from .utils import *
 TEXT_DEL = '__DEL__'  # 用于标识该item需要删除的特殊字符串
 
 
-__all__ = ['export_xls', 'import_xls', 'translate_files', 'XmlFile', 'JsonFile', 'StringsFile']
+__all__ = ['export_xls', 'import_xls', 'translate_files', 'XmlFile', 'JsonFile', 'StringsFile', 'ArbFile']
 
 
 def export_xls(out_xls, *files_tuple):
     def merge_items(base_items, new_items):
         items = Dict(base_items)
-        key_name = ItemsUtil.get_key_name_from_items(new_items)  # 可能为: key/ios_key/web_key
+        key_name = ItemsUtil.get_key_name_from_items(new_items)  # 可能为: key/ios_key/web_key/flutter_key
         for key, item in new_items.items():
             for base_item in base_items.values():
                 if not getattr(base_item, key_name) and item.all_lang_equals(base_item):

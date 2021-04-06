@@ -4,31 +4,32 @@ import json
 from ..item import *
 from .file import *
 
+
 class JsonFile(File):
-    @staticmethod
-    def read(file):
+    @classmethod
+    def read(cls, file):
         if not os.path.exists(file):
             p('warn', '%(file)s no exists.' % {'file': file})
             return {}
         obj = {}
         with open(file, mode='r', encoding='utf-8') as f:
             obj = json.load(f, object_pairs_hook=Dict)
-        return JsonFile.obj_to_dict(obj)
+        return cls.obj_to_dict(obj)
 
-    @staticmethod
-    def obj_to_dict(obj, key_prefix='', out_dict=None):
-        if out_dict == None:
+    @classmethod
+    def obj_to_dict(cls, obj, key_prefix='', out_dict=None):
+        if out_dict is None:
             out_dict = Dict()
         for k, v in obj.items():
             key = ('%s.%s' % (key_prefix, k)) if key_prefix else k
-            if(isinstance(v, dict)):
-                JsonFile.obj_to_dict(v, key, out_dict)
+            if isinstance(v, dict):
+                cls.obj_to_dict(v, key, out_dict)
             else:
                 out_dict[key] = v
         return out_dict
 
-    @staticmethod
-    def dict_to_obj(in_dict):
+    @classmethod
+    def dict_to_obj(cls, in_dict):
         out_obj = Dict()
         for k, v in in_dict.items():
             names = k.split('.')
@@ -42,9 +43,12 @@ class JsonFile(File):
             obj[names[-1]] = v
         return out_obj
 
-    def __init__(self, file, lang, is_main=True):
-        super().__init__(file, lang, is_main, keyClass=WebKey)
+    def __init__(self, file, lang, is_main=True, keyClass=WebKey):
+        super().__init__(file, lang, is_main, keyClass=keyClass)
         self._dict = self.read(file)
+
+    def _valid_entities(self):
+        return self._dict.items()
 
     def add(self, key, value):
         self._dict[str(key)] = value
@@ -53,7 +57,7 @@ class JsonFile(File):
         self._dict.pop(str(key), '')
 
     def cover(self, items):
-        for k, v in self._dict.items():
+        for k, v in self._valid_entities():
             key = self.keyClass(k)
             item = items[key]
             if item:
@@ -65,11 +69,12 @@ class JsonFile(File):
                     self._dict[k] = new_text
 
     def to_items(self, items):
-        for k, v in self._dict.items():
+        for k, v in self._valid_entities():
             key = self.keyClass(k)
             item = items[key]
             if not item:
-                item = Item(web_key=key.name)
+                kwargs = {self.keyClass.key_name(): key.name}
+                item = Item(**kwargs)
                 items[key] = item
             item[self.lang] = v
 
