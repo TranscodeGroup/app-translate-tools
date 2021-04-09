@@ -18,6 +18,10 @@ COLUMNS_DEFAULT = (COL_KEY, COL_IOS_KEY, COL_WEB_KEY, COL_FLUTTER_KEY, COL_UNTRA
 lang_column_converter = KeyValueConverter(
     zh='Chinese',
     en='English',
+    fr='French',
+    it='Italian',
+    de='German',
+    es='Spanish',
 )
 
 
