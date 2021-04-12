@@ -173,35 +173,26 @@
 #   SUBROUTINES
 #
 
-# This subroutine extracts the string including html tags
-# and may replace "root[i].text".
-# It cannot digest arbitrary encodings, so use it only if necessary.
-def findall_content(xml_string, tag):
-    pattern = r"<(?:\w+:)?%(tag)s(?:[^>]*)>(.*)</(?:\w+:)?%(tag)s" % {"tag": tag}
-    return re.findall(pattern, xml_string, re.DOTALL)
-
-
 # This subroutine calls Google translate and extracts the translation from
 # the html request
 def translate(to_translate, to_language="auto", language="auto", **kwargs):
-    # 添加延时, 希望能够避免被Google当成机器人_(:3」∠)_
-    # time.sleep(0.1)
     # send request
     r = requests.get(
-        "https://translate.google.com/m?hl=%s&sl=%s&q=%s" % (to_language, language, to_translate.replace(" ", "+")),
+        "https://translate.google.com/m?sl=%s&tl=%s&q=%s&op=translate" % (language, to_language, to_translate.replace(" ", "+")),
         **kwargs)
 
     # set markers that enclose the charset identifier
     beforecharset = 'charset='
     aftercharset = '" http-equiv'
-    # extract charset
-    parsed1 = r.text[r.text.find(beforecharset) + len(beforecharset):]
-    parsed2 = parsed1[:parsed1.find(aftercharset)]
-    # Display warning when encoding mismatch
-    if (parsed2 != r.encoding):
-        print('\x1b[1;31;40m' + 'Warning: Potential Charset conflict')
-        print(" Encoding as extracted by SELF    : " + parsed2)
-        print(" Encoding as detected by REQUESTS : " + r.encoding + '\x1b[0m')
+    if r.text.find(beforecharset) != -1:
+        # extract charset
+        parsed1 = r.text[r.text.find(beforecharset) + len(beforecharset):]
+        parsed2 = parsed1[:parsed1.find(aftercharset)]
+        # Display warning when encoding mismatch
+        if (parsed2 != r.encoding):
+            print('\x1b[1;31;40m' + 'Warning: Potential Charset conflict')
+            print(" Encoding as extracted by SELF    : " + parsed2)
+            print(" Encoding as detected by REQUESTS : " + r.encoding + '\x1b[0m')
 
     # Work around an AGE OLD Python bug in case of windows-874 encoding
     # https://bugs.python.org/issue854511
@@ -213,8 +204,8 @@ def translate(to_translate, to_language="auto", language="auto", **kwargs):
     # convert html tags
     text = html.unescape(r.text)
     # set markers that enclose the wanted translation
-    before_trans = 'class="t0">'
-    after_trans = '</div><form'
+    before_trans = 'class="result-container">'
+    after_trans = '</div>'
     # extract translation and return it
     parsed1 = r.text[r.text.find(before_trans) + len(before_trans):]
     parsed2 = parsed1[:parsed1.find(after_trans)]
@@ -296,5 +287,11 @@ def test_proxy():
     print(translate("hello world!", "zh-CN", proxies=proxies))
 
 
+def test_lang():
+    print(translate('hello world!', 'zh-CN'))
+    print(translate('你好 世界', 'en'))
+
+
 if __name__ == '__main__':
-    main()
+    # main()
+    test_lang()
