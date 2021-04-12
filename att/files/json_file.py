@@ -74,9 +74,19 @@ class JsonFile(File):
             item = items[key]
             if not item:
                 kwargs = {self.keyClass.key_name(): key.name}
-                item = Item(**kwargs)
+                item = Item(
+                    untranslatable=self._is_untranslatable_by_key(k),
+                    auto_translate=self._is_auto_translate_by_key(k),
+                    **kwargs
+                )
                 items[key] = item
             item[self.lang] = v
+
+    def _is_untranslatable_by_key(self, k):
+        return False
+
+    def _is_auto_translate_by_key(self, k):
+        return True
 
     def to_file(self, file):
         if not os.path.exists(file):

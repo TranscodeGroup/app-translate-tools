@@ -15,3 +15,15 @@ class ArbFile(JsonFile):
 
     def _valid_entities(self):
         return filter(lambda it: not it[0].startswith('@'), self._dict.items())
+
+    def _is_untranslatable_by_key(self, k):
+        desc = self._dict.get('@' + k, None)
+        if desc:
+            return desc.get('untranslatable', False)
+        return False
+
+    def _is_auto_translate_by_key(self, k):
+        desc = self._dict.get('@' + k, None)
+        if desc:
+            return desc.get('translateAuto', True)
+        return True

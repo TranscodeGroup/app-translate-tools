@@ -15,9 +15,9 @@ def open_files():
 
 
 def main():
-    translate_files(open_files(), translate_all_lang=True)
-    # export_xls('./tmp/urikar-2021-04-12.xls', open_files())
-    # import_xls('./tmp/urikar-2021-04-12.xls', open_files())
+    # translate_files(open_files(), translate_all_lang=True)
+    export_xls('./tmp/urikar-2021-04-12.xls', open_files())
+    import_xls('./tmp/urikar-2021-04-12.xls', open_files())
     pass
 
 
