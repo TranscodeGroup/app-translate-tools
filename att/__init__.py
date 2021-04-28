@@ -43,7 +43,7 @@ def export_xls(out_xls, *files_tuple):
     ItemsUtil.write_items_to_xls(out_xls, reduce(merge_items, map(ItemsUtil.read_files_to_items, files_tuple)))
 
 
-def import_xls(in_xls, *files_tuple):
+def import_xls(in_xls, *files_tuple, delete_no_exist_item=True):
     def process_diff_cover(files, new_items):
         """
         只处理新旧items中key相同的部分
@@ -110,7 +110,7 @@ def import_xls(in_xls, *files_tuple):
                                 'file': file.file,
                             })
             else:  # item存在, new_item不存在, 则需要删除
-                if not item.untranslatable:  # see: @write_items_to_xls_only_translatable
+                if not item.untranslatable and delete_no_exist_item:  # see: @write_items_to_xls_only_translatable
                     for lang, file in lang_files:
                         file.remove(key)
                         p('info', '-- [%(lang)s] %(key)s: %(value)s (in %(file)s)' % {
