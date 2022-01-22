@@ -38,6 +38,17 @@
             },
         },
         {
+            "name": "tg_bus.py",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/tg_bus.py",
+            "console": "integratedTerminal",
+            "env": {
+                "https_proxy": "http://127.0.0.1:1080",
+                "http_proxy": "http://127.0.0.1:1080",
+            },
+        },
+        {
             "name": "Python: Current File",
             "type": "python",
             "request": "launch",
