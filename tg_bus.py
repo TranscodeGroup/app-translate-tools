@@ -5,9 +5,9 @@ from att import *
 
 def open_files():
     return (
-        ArbFile('../@tg/flutter_distar_ex17/assets/languages/en-US.json', 'en'),
-        ArbFile('../@tg/flutter_distar_ex17/assets/languages/th-TH.json', 'th'),
-        ArbFile('../@tg/flutter_distar_ex17/assets/languages/zh-CN.json', 'zh'),
+        ArbFile('../@tg/flutter_distar_ex17/lib/v2/resource/l10n/app_en.arb', 'en'),
+        ArbFile('../@tg/flutter_distar_ex17/lib/v2/resource/l10n/app_th.arb', 'th'),
+        ArbFile('../@tg/flutter_distar_ex17/lib/v2/resource/l10n/app_zh.arb', 'zh'),
     )
 
 
