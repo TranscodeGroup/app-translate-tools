@@ -4,6 +4,8 @@ from .item import *
 from .files import *
 import typing
 
+pd.set_option('io.excel.xls.writer', 'xlwt')
+
 SORTED_BY_TEXT = False
 CLEAR_UNTRANSLATE_LANG = False
 
@@ -113,7 +115,7 @@ class ItemsUtil:
             item_list = items.values()
         for item in item_list:
             if not item.untranslatable:  # 只输出需要翻译的内容 @write_items_to_xls_only_translatable
-                # 新列的index
+                # 新行的index
                 index = len(df)
                 row = [
                     fc.to_text(item.key),
@@ -132,7 +134,7 @@ class ItemsUtil:
                     # 若语言对应的列不存在, 则添加一列, 默认值设为''
                     if df.get(column) is None:
                         df[column] = ''
-                    df[column][index] = fc.to_text(text)
+                    df.loc[index, column] = fc.to_text(text)
 
         out_columns = list(df.columns)
         out_columns.remove(COL_UNTRANSLATABLE)
