@@ -5,6 +5,13 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Python: Current File",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal"
+        },
+        {
             "name": "tg.py",
             "type": "python",
             "request": "launch",
@@ -49,11 +56,15 @@
             },
         },
         {
-            "name": "Python: Current File",
+            "name": "tg_mt.py",
             "type": "python",
             "request": "launch",
-            "program": "${file}",
-            "console": "integratedTerminal"
-        }
+            "program": "${workspaceFolder}/tg_mt.py",
+            "console": "integratedTerminal",
+            "env": {
+                "https_proxy": "http://127.0.0.1:1080",
+                "http_proxy": "http://127.0.0.1:1080",
+            },
+        },
     ]
 }
