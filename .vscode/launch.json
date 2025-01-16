@@ -17,8 +17,8 @@
             "request": "launch",
             "program": "${workspaceFolder}/tg.py",
             "env": {
-                "https_proxy": "http://127.0.0.1:1080",
-                "http_proxy": "http://127.0.0.1:1080",
+                "https_proxy": "http://127.0.0.1:7890",
+                "http_proxy": "http://127.0.0.1:7890",
             },
             "console": "integratedTerminal"
         },
@@ -29,8 +29,8 @@
             "program": "${workspaceFolder}/selpic.py",
             "console": "integratedTerminal",
             "env": {
-                "https_proxy": "http://127.0.0.1:1080",
-                "http_proxy": "http://127.0.0.1:1080",
+                "https_proxy": "http://127.0.0.1:7890",
+                "http_proxy": "http://127.0.0.1:7890",
             },
         },
         {
@@ -40,8 +40,8 @@
             "program": "${workspaceFolder}/urikar.py",
             "console": "integratedTerminal",
             "env": {
-                "https_proxy": "http://127.0.0.1:1080",
-                "http_proxy": "http://127.0.0.1:1080",
+                "https_proxy": "http://127.0.0.1:7890",
+                "http_proxy": "http://127.0.0.1:7890",
             },
         },
         {
@@ -51,8 +51,8 @@
             "program": "${workspaceFolder}/tg_bus.py",
             "console": "integratedTerminal",
             "env": {
-                "https_proxy": "http://127.0.0.1:1080",
-                "http_proxy": "http://127.0.0.1:1080",
+                "https_proxy": "http://127.0.0.1:7890",
+                "http_proxy": "http://127.0.0.1:7890",
             },
         },
         {
@@ -62,8 +62,8 @@
             "program": "${workspaceFolder}/tg_mt.py",
             "console": "integratedTerminal",
             "env": {
-                "https_proxy": "http://127.0.0.1:1080",
-                "http_proxy": "http://127.0.0.1:1080",
+                "https_proxy": "http://127.0.0.1:7890",
+                "http_proxy": "http://127.0.0.1:7890",
             },
         },
     ]
