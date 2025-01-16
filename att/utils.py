@@ -45,11 +45,10 @@ def find_outer_dir(name: str):
     """
     递归查找父目录中是否存在指定的目录名
     """
-    dir = os.getcwd()
-    while dir != os.path.dirname(dir):
-        dir = os.path.dirname(dir)
-        target_path = os.path.join(dir, name)
+    cur_dir = os.getcwd()
+    while cur_dir != os.path.dirname(cur_dir):
+        cur_dir = os.path.dirname(cur_dir)
+        target_path = os.path.join(cur_dir, name)
         if os.path.isdir(target_path):
             return target_path
-    else:
-        return name
+    return name
