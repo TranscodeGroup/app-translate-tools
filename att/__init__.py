@@ -19,7 +19,7 @@ from .utils import *
 TEXT_DEL = '__DEL__'  # 用于标识该item需要删除的特殊字符串
 
 
-__all__ = ['export_xls', 'import_xls', 'translate_files', 'XmlFile', 'JsonFile', 'StringsFile', 'ArbFile']
+__all__ = ['export_xls', 'import_xls', 'translate_files', 'XmlFile', 'JsonFile', 'StringsFile', 'ArbFile', 'find_outer_dir']
 
 
 def export_xls(out_xls, *files_tuple):
@@ -138,8 +138,8 @@ def import_xls(in_xls, *files_tuple, delete_no_exist_item=True):
     # android_files = open_android_files()
     # ios_files = open_ios_files()
 
-    ## process_diff_cover(android_files, new_items)
-    ## process_diff_cover(ios_files, new_items)
+    # process_diff_cover(android_files, new_items)
+    # process_diff_cover(ios_files, new_items)
 
     # process_diff_all(android_files, new_items, 'key')
     # process_diff_all(ios_files, new_items, 'ios_key')

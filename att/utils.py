@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+import os
 
 
 def p(*values):
@@ -38,3 +39,17 @@ class KeyValueConverter:
 
     def get_value(self, key, default=None):
         return self.key2value.get(key, default)
+
+
+def find_outer_dir(name: str):
+    """
+    递归查找父目录中是否存在指定的目录名
+    """
+    dir = os.getcwd()
+    while dir != os.path.dirname(dir):
+        dir = os.path.dirname(dir)
+        target_path = os.path.join(dir, name)
+        if os.path.isdir(target_path):
+            return target_path
+    else:
+        return name
